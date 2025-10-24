@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Clientes heliii</title>
+    <title>Clientes</title>
     <?php
     // Incluye el archivo que contiene la variable con los links
     include 'src/assets/linksFront.php';

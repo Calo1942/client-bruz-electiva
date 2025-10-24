@@ -6,35 +6,39 @@ import {
     validarTelefono 
 } from './helpers/validation.js';
 
-// Variables globales para almacenar el estado de validación
-let validacionesCrear = {
-    cedula: false,
-    nombre: false,
-    apellido: false,
-    email: false,
-    telefono: false
+// Objetos para rastrear errores de validación
+let erroresCrear = {
+    cedula: true,
+    nombre: true,
+    apellido: true,
+    email: true,
+    telefono: true
 };
 
-let validacionesEditar = {
-    nombre: false,
-    apellido: false,
-    email: false,
-    telefono: false
+let erroresEditar = {
+    nombre: true,
+    apellido: true,
+    email: true,
+    telefono: true
 };
 
-// Función para verificar si todas las validaciones son correctas
-function verificarValidacionesCompletas(validaciones) {
-    return Object.values(validaciones).every(val => val === true);
+// Función para verificar si hay errores
+function hayErrores(errores) {
+    return Object.values(errores).some(error => error === true);
 }
 
 // Función para habilitar/deshabilitar botón de envío
-function actualizarBotonEnvio(formulario, validaciones) {
+function actualizarBotonEnvio(formulario, errores) {
     const botonEnvio = formulario.find('button[type="submit"]');
-    if (verificarValidacionesCompletas(validaciones)) {
-        botonEnvio.prop('disabled', false);
-    } else {
-        botonEnvio.prop('disabled', true);
-    }
+    const tieneErrores = hayErrores(errores);
+    botonEnvio.prop('disabled', tieneErrores);
+}
+
+// Función genérica para validar campo en tiempo real
+async function validarCampoTiempoReal(campo, validador, objetoErrores, campoKey, formulario) {
+    const valido = await validador(campo);
+    objetoErrores[campoKey] = !valido;
+    actualizarBotonEnvio(formulario, objetoErrores);
 }
 
 // Validaciones para el formulario de crear cliente
@@ -42,72 +46,57 @@ function inicializarValidacionesCrear() {
     const formulario = $('#formAgregarCliente');
     
     // Validación de cédula
-    $('#cedulaCliente').on('blur', async function() {
+    $('#cedulaCliente').on('input', async function() {
         const campo = $(this);
-        validacionesCrear.cedula = await validarCedula(campo);
-        actualizarBotonEnvio(formulario, validacionesCrear);
+        await validarCampoTiempoReal(campo, validarCedula, erroresCrear, 'cedula', formulario);
     });
 
     // Validación de nombre
-    $('#nombreCliente').on('blur', async function() {
+    $('#nombreCliente').on('input', async function() {
         const campo = $(this);
-        validacionesCrear.nombre = await validarNombre(campo);
-        actualizarBotonEnvio(formulario, validacionesCrear);
+        await validarCampoTiempoReal(campo, validarNombre, erroresCrear, 'nombre', formulario);
     });
 
     // Validación de apellido
-    $('#apellidoCliente').on('blur', async function() {
+    $('#apellidoCliente').on('input', async function() {
         const campo = $(this);
-        validacionesCrear.apellido = await validarApellido(campo);
-        actualizarBotonEnvio(formulario, validacionesCrear);
+        await validarCampoTiempoReal(campo, validarApellido, erroresCrear, 'apellido', formulario);
     });
 
     // Validación de email
-    $('#emailCliente').on('blur', async function() {
+    $('#emailCliente').on('input', async function() {
         const campo = $(this);
-        validacionesCrear.email = await validarEmail(campo);
-        actualizarBotonEnvio(formulario, validacionesCrear);
+        await validarCampoTiempoReal(campo, validarEmail, erroresCrear, 'email', formulario);
     });
 
     // Validación de teléfono
-    $('#telefonoCliente').on('blur', async function() {
+    $('#telefonoCliente').on('input', async function() {
         const campo = $(this);
-        validacionesCrear.telefono = await validarTelefono(campo);
-        actualizarBotonEnvio(formulario, validacionesCrear);
+        await validarCampoTiempoReal(campo, validarTelefono, erroresCrear, 'telefono', formulario);
     });
 
     // Validación al enviar el formulario
-    formulario.on('submit', async function(e) {
+    formulario.on('submit', function(e) {
         e.preventDefault();
         
-        // Validar todos los campos antes de enviar
-        const cedula = $('#cedulaCliente');
-        const nombre = $('#nombreCliente');
-        const apellido = $('#apellidoCliente');
-        const email = $('#emailCliente');
-        const telefono = $('#telefonoCliente');
-
-        const cedulaValida = await validarCedula(cedula);
-        const nombreValido = await validarNombre(nombre);
-        const apellidoValido = await validarApellido(apellido);
-        const emailValido = await validarEmail(email);
-        const telefonoValido = await validarTelefono(telefono);
-
-        if (cedulaValida && nombreValido && apellidoValido && emailValido && telefonoValido) {
-            // Si todas las validaciones son correctas, enviar el formulario
-            this.submit();
-        } else {
-            // Mostrar mensaje de error
-            alert('Por favor, corrija los errores en el formulario antes de enviar.');
+        // Verificar si hay errores
+        if (hayErrores(erroresCrear)) {
+            alert('Por favor, corrija los errores en el formulario antes de enviar ❌');
+            return;
         }
+        
+        // Si no hay errores, enviar el formulario
+        alert('Formulario enviado correctamente ✅');
+        this.submit();
     });
 
     // Limpiar validaciones cuando se cierre el modal
     $('#agregarClienteModal').on('hidden.bs.modal', function() {
         formulario[0].reset();
         formulario.find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
-        Object.keys(validacionesCrear).forEach(key => {
-            validacionesCrear[key] = false;
+        // Resetear errores a true (estado inicial con errores)
+        Object.keys(erroresCrear).forEach(key => {
+            erroresCrear[key] = true;
         });
         formulario.find('button[type="submit"]').prop('disabled', true);
     });
@@ -118,62 +107,50 @@ function inicializarValidacionesEditar() {
     const formulario = $('#formEditarCliente');
     
     // Validación de nombre
-    $('#editarNombre').on('blur', async function() {
+    $('#editarNombre').on('input', async function() {
         const campo = $(this);
-        validacionesEditar.nombre = await validarNombre(campo);
-        actualizarBotonEnvio(formulario, validacionesEditar);
+        await validarCampoTiempoReal(campo, validarNombre, erroresEditar, 'nombre', formulario);
     });
 
     // Validación de apellido
-    $('#editarApellido').on('blur', async function() {
+    $('#editarApellido').on('input', async function() {
         const campo = $(this);
-        validacionesEditar.apellido = await validarApellido(campo);
-        actualizarBotonEnvio(formulario, validacionesEditar);
+        await validarCampoTiempoReal(campo, validarApellido, erroresEditar, 'apellido', formulario);
     });
 
     // Validación de email
-    $('#editarCorreo').on('blur', async function() {
+    $('#editarCorreo').on('input', async function() {
         const campo = $(this);
-        validacionesEditar.email = await validarEmail(campo);
-        actualizarBotonEnvio(formulario, validacionesEditar);
+        await validarCampoTiempoReal(campo, validarEmail, erroresEditar, 'email', formulario);
     });
 
     // Validación de teléfono
-    $('#editarTelefono').on('blur', async function() {
+    $('#editarTelefono').on('input', async function() {
         const campo = $(this);
-        validacionesEditar.telefono = await validarTelefono(campo);
-        actualizarBotonEnvio(formulario, validacionesEditar);
+        await validarCampoTiempoReal(campo, validarTelefono, erroresEditar, 'telefono', formulario);
     });
 
     // Validación al enviar el formulario
-    formulario.on('submit', async function(e) {
+    formulario.on('submit', function(e) {
         e.preventDefault();
         
-        // Validar todos los campos antes de enviar
-        const nombre = $('#editarNombre');
-        const apellido = $('#editarApellido');
-        const email = $('#editarCorreo');
-        const telefono = $('#editarTelefono');
-
-        const nombreValido = await validarNombre(nombre);
-        const apellidoValido = await validarApellido(apellido);
-        const emailValido = await validarEmail(email);
-        const telefonoValido = await validarTelefono(telefono);
-
-        if (nombreValido && apellidoValido && emailValido && telefonoValido) {
-            // Si todas las validaciones son correctas, enviar el formulario
-            this.submit();
-        } else {
-            // Mostrar mensaje de error
-            alert('Por favor, corrija los errores en el formulario antes de enviar.');
+        // Verificar si hay errores
+        if (hayErrores(erroresEditar)) {
+            alert('Por favor, corrija los errores en el formulario antes de enviar ❌');
+            return;
         }
+        
+        // Si no hay errores, enviar el formulario
+        alert('Formulario enviado correctamente ✅');
+        this.submit();
     });
 
     // Limpiar validaciones cuando se cierre el modal
     $('#editarClienteModal').on('hidden.bs.modal', function() {
         formulario.find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
-        Object.keys(validacionesEditar).forEach(key => {
-            validacionesEditar[key] = false;
+        // Resetear errores a true (estado inicial con errores)
+        Object.keys(erroresEditar).forEach(key => {
+            erroresEditar[key] = true;
         });
         formulario.find('button[type="submit"]').prop('disabled', true);
     });

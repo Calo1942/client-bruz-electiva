@@ -2,7 +2,7 @@ $(document).ready(async function() {
     // Inicializar DataTable para clientes
     const tblClient = $('#clientTable').DataTable({
         ajax: {
-            url: 'src/Controllers/ClientController.php',
+            url: '',
             method: 'POST',
             data: {
                 getClients: true

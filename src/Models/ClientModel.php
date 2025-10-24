@@ -15,43 +15,43 @@ class ClientModel extends DBConnect implements Crud {
     private $correo;
     private $telefono;
 
-    public function getCedula() {
+    private function getCedula() {
         return $this->cedula;
     }
 
-    public function getNombre() {
+    private function getNombre() {
         return $this->nombre;
     }
 
-    public function getApellido() {
+    private function getApellido() {
         return $this->apellido;
     }
 
-    public function getCorreo() {
+    private function getCorreo() {
         return $this->correo;
     }
 
-    public function getTelefono() {
+    private function getTelefono() {
         return $this->telefono;
     }
 
-    public function setCedula($cedula) {
+    private function setCedula($cedula) {
         $this->cedula = $cedula;
     }
 
-    public function setNombre($nombre) {
+    private function setNombre($nombre) {
         $this->nombre = $nombre;
     }
 
-    public function setApellido($apellido) {
+    private function setApellido($apellido) {
         $this->apellido = $apellido;
     }
 
-    public function setCorreo($correo) {
+    private function setCorreo($correo) {
         $this->correo = $correo;
     }
 
-    public function setTelefono($telefono) {
+    private function setTelefono($telefono) {
         $this->telefono = $telefono;
     }
 
@@ -70,9 +70,6 @@ class ClientModel extends DBConnect implements Crud {
                 ':correo' => $data['correo'] ?? null,
                 ':telefono' => $data['telefono'] ?? null
             ]);
-        }  catch (\PDOException $e) {
-            error_log("Error en ClientModel::store: " . $e->getMessage());
-            return false;
         } catch (\Exception $e) {
             error_log("Error inesperado en Cliente: " . $e->getMessage());
             return false;

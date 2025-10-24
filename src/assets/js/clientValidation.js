@@ -8,11 +8,11 @@ import {
 
 // Objetos para rastrear errores de validación
 let erroresCrear = {
-    cedula: true,
-    nombre: true,
-    apellido: true,
-    email: true,
-    telefono: true
+    cedula: false,
+    nombre: false,
+    apellido: false,
+    email: false,
+    telefono: false
 };
 
 let erroresEditar = {
@@ -77,28 +77,26 @@ function inicializarValidacionesCrear() {
 
     // Validación al enviar el formulario
     formulario.on('submit', function(e) {
-        e.preventDefault();
-        
         // Verificar si hay errores
         if (hayErrores(erroresCrear)) {
+            e.preventDefault();
             alert('Por favor, corrija los errores en el formulario antes de enviar ❌');
-            return;
+            return false;
         }
         
-        // Si no hay errores, enviar el formulario
-        alert('Formulario enviado correctamente ✅');
-        this.submit();
+        // Si no hay errores, permitir el envío normal del formulario
+        return true;
     });
 
     // Limpiar validaciones cuando se cierre el modal
     $('#agregarClienteModal').on('hidden.bs.modal', function() {
         formulario[0].reset();
         formulario.find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
-        // Resetear errores a true (estado inicial con errores)
+        // Resetear errores a false (estado inicial sin errores)
         Object.keys(erroresCrear).forEach(key => {
-            erroresCrear[key] = true;
+            erroresCrear[key] = false;
         });
-        formulario.find('button[type="submit"]').prop('disabled', true);
+        formulario.find('button[type="submit"]').prop('disabled', false);
     });
 }
 
@@ -132,27 +130,25 @@ function inicializarValidacionesEditar() {
 
     // Validación al enviar el formulario
     formulario.on('submit', function(e) {
-        e.preventDefault();
-        
         // Verificar si hay errores
         if (hayErrores(erroresEditar)) {
+            e.preventDefault();
             alert('Por favor, corrija los errores en el formulario antes de enviar ❌');
-            return;
+            return false;
         }
         
-        // Si no hay errores, enviar el formulario
-        alert('Formulario enviado correctamente ✅');
-        this.submit();
+        // Si no hay errores, permitir el envío normal del formulario
+        return true;
     });
 
     // Limpiar validaciones cuando se cierre el modal
     $('#editarClienteModal').on('hidden.bs.modal', function() {
         formulario.find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
-        // Resetear errores a true (estado inicial con errores)
+        // Resetear errores a false (estado inicial sin errores)
         Object.keys(erroresEditar).forEach(key => {
-            erroresEditar[key] = true;
+            erroresEditar[key] = false;
         });
-        formulario.find('button[type="submit"]').prop('disabled', true);
+        formulario.find('button[type="submit"]').prop('disabled', false);
     });
 }
 
@@ -162,9 +158,9 @@ $(document).ready(function() {
     inicializarValidacionesCrear();
     inicializarValidacionesEditar();
     
-    // Deshabilitar botones de envío inicialmente
-    $('#formAgregarCliente button[type="submit"]').prop('disabled', true);
-    $('#formEditarCliente button[type="submit"]').prop('disabled', true);
+    // Habilitar botones de envío inicialmente (sin errores)
+    $('#formAgregarCliente button[type="submit"]').prop('disabled', false);
+    $('#formEditarCliente button[type="submit"]').prop('disabled', false);
 });
 
 // Exportar funciones para uso externo si es necesario

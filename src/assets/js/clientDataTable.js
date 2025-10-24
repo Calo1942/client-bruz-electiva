@@ -1,5 +1,4 @@
 $(document).ready(async function() {
-    // Inicializar DataTable para clientes
     const tblClient = $('#clientTable').DataTable({
         ajax: {
             url: '',
@@ -36,23 +35,23 @@ $(document).ready(async function() {
         ],
         "language":{
             url: "https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json",
-            search: "", // Eliminar el texto "Buscar:"
-            searchPlaceholder: "Buscar..." // Agregar placeholder
+            search: "", 
+            searchPlaceholder: "Buscar..." 
         },
         "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
                '<"row"<"col-sm-12"tr>>' +
                '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
         "initComplete": function() {
-            // Personalizar el campo de búsqueda después de la inicialización
+            
             $('.dataTables_filter input').attr('placeholder', 'Buscar...');
         }
     });
 
-    // Evento para ver cliente
+    
     $(document).on('click', '.btn-ver', async function() {
         const cedula = this.value;
         
-        // Obtener datos del cliente
+        
         $.ajax({
             url: '',
             method: 'POST',
@@ -63,14 +62,14 @@ $(document).ready(async function() {
             },
             success: function(response) {
                 if (response.success) {
-                    // Llenar modal de visualización
+                    
                     $('#verCedula').text(response.data.cedula);
                     $('#verNombre').text(response.data.nombre);
                     $('#verApellido').text(response.data.apellido);
                     $('#verCorreo').text(response.data.correo);
                     $('#verTelefono').text(response.data.telefono);
                     
-                    // Abrir modal
+                    
                     $('#verClienteModal').modal('show');
                 } else {
                     alert('Error al cargar los datos del cliente');
@@ -82,11 +81,11 @@ $(document).ready(async function() {
         });
     });
 
-    // Evento para editar cliente
+   
     $(document).on('click', '.btn-editar', async function() {
         const cedula = this.value;
         
-        // Obtener datos del cliente
+        
         $.ajax({
             url: '',
             method: 'POST',
@@ -97,14 +96,13 @@ $(document).ready(async function() {
             },
             success: function(response) {
                 if (response.success) {
-                    // Llenar formulario de edición
+            
                     $('#editarCedula').val(response.data.cedula);
                     $('#editarNombre').val(response.data.nombre);
                     $('#editarApellido').val(response.data.apellido);
                     $('#editarCorreo').val(response.data.correo);
                     $('#editarTelefono').val(response.data.telefono);
                     
-                    // Abrir modal
                     $('#editarClienteModal').modal('show');
                 } else {
                     alert('Error al cargar los datos del cliente');
@@ -116,7 +114,7 @@ $(document).ready(async function() {
         });
     });
 
-    // Evento para eliminar cliente
+   
     $(document).on('click', '.btn-eliminar', async function() {
         const cedula = this.value;
         
@@ -144,18 +142,15 @@ $(document).ready(async function() {
         }
     });
 
-    // Evento para recargar tabla después de crear cliente
+   
     $('#agregarClienteModal').on('hidden.bs.modal', function() {
-        // Verificar si el formulario se envió correctamente
-        // Esto se puede mejorar con un flag o evento personalizado
         setTimeout(() => {
             tblClient.ajax.reload();
         }, 500);
     });
 
-    // Evento para recargar tabla después de editar cliente
+    
     $('#editarClienteModal').on('hidden.bs.modal', function() {
-        // Verificar si el formulario se envió correctamente
         setTimeout(() => {
             tblClient.ajax.reload();
         }, 500);

@@ -39,8 +39,8 @@
     --blue-200: #b8d1ff;
     --blue-300: #8ab2ff;
     --blue-400: #5c93ff;
-    --blue-500: #2e74ff;  /* azul principal */
-    --blue-600: #265fcc;
+    --blue-500: #0d6efd;  /* azul principal - Bootstrap primary */
+    --blue-600: #0b5ed7;  /* Bootstrap primary hover */
     --blue-700: #1e4b99;
     --blue-800: #153766;
     --blue-900: #0c2340;  /* muy oscuro */
@@ -221,13 +221,16 @@ main {
     font-family: 'Roboto', sans-serif;
 }
 
-/* Estilo para la tabla DataTable */
+/* Estilo para la tabla DataTable - Integrada con el fondo */
 #clientTable {
     border-collapse: separate;
     border-spacing: 0;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 0; /* Sin márgenes para integrar con el fondo */
+    width: 100%; /* Ancho completo */
+    background-color: var(--secondary-100); /* Fondo de la tabla */
 }
 
 /* Encabezados de la tabla */
@@ -237,7 +240,7 @@ main {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     border: none;
-    padding: 15px 12px;
+    padding: 15px; /* Padding uniforme en todos los lados */
     text-align: center;
 }
 
@@ -252,106 +255,158 @@ main {
 }
 
 #clientTable tbody td {
-    padding: 12px;
+    padding: 12px 15px; /* Aumentar padding horizontal */
     border-bottom: 1px solid var(--secondary-200);
     text-align: center;
     font-family: 'Roboto', sans-serif;
     color: var(--secondary-800);
 }
 
-/* Botones de acción en DataTable */
+/* Botones de acción en DataTable - Usar los mismos estilos que los botones personalizados */
 #clientTable .btn {
-    margin: 2px;
-    border: none;
-    transition: all 0.2s ease;
+    width: 30px; 
+    height: 30px;
+    border-radius: 100%;
 }
 
-#clientTable .btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-/* Estilo para botón de ver */
+/* Estilo para botón de ver/detalle */
 #clientTable .btn-primary {
-    background-color: var(--blue-500);
+    background-color: var(--blue-500); 
     color: var(--secondary-100);
 }
 
 #clientTable .btn-primary:hover {
     background-color: var(--blue-600);
+    color: var(--secondary-100);
 }
 
 /* Estilo para botón de editar */
 #clientTable .btn-secondary {
-    background-color: var(--secondary-500);
+    background-color: var(--secondary-500); 
     color: var(--secondary-100);
 }
 
 #clientTable .btn-secondary:hover {
     background-color: var(--secondary-600);
+    color: var(--secondary-100);
 }
 
 /* Estilo para botón de eliminar */
 #clientTable .btn-danger {
-    background-color: var(--primary-400);
+    background-color: var(--primary-400); 
     color: var(--secondary-100);
 }
 
 #clientTable .btn-danger:hover {
     background-color: var(--primary-500);
+    color: var(--secondary-100);
 }
 
-/* Controles de DataTable */
+/* Controles de DataTable - Con padding interno pero sin efecto de card */
 .dataTables_length,
 .dataTables_filter,
 .dataTables_info,
 .dataTables_paginate {
     font-family: 'Roboto', sans-serif;
     color: var(--secondary-700);
+    padding: 0; /* Sin padding adicional (ya está en wrapper) */
+    margin: 10px 0; /* Solo margen vertical */
+    background: transparent; /* Fondo transparente */
 }
 
-/* Campo de búsqueda */
+/* Contenedor principal de DataTable - Sin efecto de card pero con padding interno */
+.dataTables_wrapper {
+    padding: 15px; /* Padding interno para que no esté pegado */
+    margin: 0; /* Sin margen exterior */
+    max-width: 100%;
+    background: transparent; /* Fondo transparente */
+    border: none; /* Sin bordes */
+    box-shadow: none; /* Sin sombra */
+}
+
+/* Campo de búsqueda - Con padding del wrapper */
+.dataTables_filter {
+    padding: 0; /* Sin padding adicional (ya está en wrapper) */
+}
+
 .dataTables_filter input {
-    border: 2px solid var(--secondary-300);
-    border-radius: 6px;
+    border: 1px solid var(--secondary-300);
+    border-radius: 4px;
     padding: 8px 12px;
     font-family: 'Roboto', sans-serif;
-    transition: border-color 0.2s ease;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--secondary-100);
+    color: var(--secondary-800);
+    margin-left: 10px; /* Separar del texto "Buscar:" si aparece */
 }
 
 .dataTables_filter input:focus {
-    border-color: var(--primary-500);
-    box-shadow: 0 0 0 0.2rem rgba(165, 40, 40, 0.25);
+    border-color: var(--secondary-500);
+    box-shadow: 0 0 0 0.2rem rgba(190, 190, 190, 0.6);
     outline: none;
+    background-color: var(--secondary-100);
 }
 
-/* Paginación */
+/* Paginación - Estilo mejorado y moderno */
+.dataTables_paginate {
+    padding: 0; /* Sin padding adicional (ya está en wrapper) */
+    margin-top: 20px; /* Más separación de la tabla */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px; /* Espaciado uniforme entre botones */
+}
+
 .dataTables_paginate .paginate_button {
     background-color: var(--secondary-100);
     border: 1px solid var(--secondary-300);
     color: var(--secondary-700);
-    border-radius: 6px;
-    margin: 0 2px;
-    padding: 8px 12px;
-    transition: all 0.2s ease;
+    border-radius: 8px;
+    margin: 0;
+    padding: 10px 14px;
+    transition: all 0.3s ease;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    min-width: 40px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .dataTables_paginate .paginate_button:hover {
     background-color: var(--primary-500);
     color: var(--secondary-100);
     border-color: var(--primary-500);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(165, 40, 40, 0.2);
 }
 
 .dataTables_paginate .paginate_button.current {
     background-color: var(--primary-500);
     color: var(--secondary-100);
     border-color: var(--primary-500);
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(165, 40, 40, 0.3);
 }
 
 .dataTables_paginate .paginate_button.disabled {
     background-color: var(--secondary-200);
     color: var(--secondary-400);
     border-color: var(--secondary-300);
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+}
+
+.dataTables_paginate .paginate_button.disabled:hover {
+    background-color: var(--secondary-200);
+    color: var(--secondary-400);
+    border-color: var(--secondary-300);
+    transform: none;
+    box-shadow: none;
 }
 
 /* Selector de cantidad de registros */

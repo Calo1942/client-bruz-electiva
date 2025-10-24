@@ -36,6 +36,15 @@ $(document).ready(async function() {
         ],
         "language":{
             url: "https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json",
+            search: "", // Eliminar el texto "Buscar:"
+            searchPlaceholder: "Buscar..." // Agregar placeholder
+        },
+        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+               '<"row"<"col-sm-12"tr>>' +
+               '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        "initComplete": function() {
+            // Personalizar el campo de búsqueda después de la inicialización
+            $('.dataTables_filter input').attr('placeholder', 'Buscar...');
         }
     });
 

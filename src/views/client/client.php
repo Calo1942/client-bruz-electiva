@@ -1,8 +1,13 @@
+<!doctype html>
+<html lang="es">
+
 <head>
-    <!-- Bootstrap CSS -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clientes</title>
     <?php
     // Incluye el archivo que contiene la variable con los links
-    include 'src/config/components/Front/linksFront.php';
+    include 'src/assets/linksFront.php';
     // Imprime la variable dentro de la etiqueta <head>
     echo $css_links;
     ?>
@@ -29,9 +34,12 @@
             ?>
         </main>
 
-        <!-- Scripts Bootstrap -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- para javascript <script src="../../assets/js/script.js"> </script> -->
+        <!-- Scripts principales -->
+        <?php echo $scripts_links; ?>
+        
+        <!-- Scripts específicos de la página -->
+        <script type="module" src="src/assets/js/clientValidation.js"></script>
+        <script src="src/assets/js/clientDataTable.js"></script>
 
         <!-- Modales -->
         <?php require_once 'components/clientEditModal.php'; ?>

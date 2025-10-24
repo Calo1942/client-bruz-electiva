@@ -8,6 +8,15 @@ use BruzDeporte\Models\ClientModel;
 $model = new ClientModel();
 $action = null;
 
+// Manejar peticiones AJAX
+if (isset($_POST['getClients'])) {
+    $action = 'getClients';
+} elseif (isset($_POST['showClient'])) {
+    $action = 'showClient';
+} elseif (isset($_POST['deleteClient'])) {
+    $action = 'deleteClient';
+}
+
 // Detecta la acción solicitada por POST
 if (isset($_POST['store'])) {
     $action = 'store';
@@ -20,6 +29,49 @@ if (isset($_POST['store'])) {
 }
 
 switch ($action) {
+    // Obtener todos los clientes para DataTable (AJAX)
+    case 'getClients':
+        $clientes = $model->findAll();
+        if ($clientes !== false) {
+            echo json_encode($clientes);
+        } else {
+            echo json_encode([]);
+        }
+        exit;
+        break;
+    
+    // Obtener un cliente específico (AJAX)
+    case 'showClient':
+        $cedula = $_POST['cedula'] ?? null;
+        if ($cedula) {
+            $cliente = $model->find($cedula);
+            if ($cliente) {
+                echo json_encode(['success' => true, 'data' => $cliente]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Cliente no encontrado']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Cédula no proporcionada']);
+        }
+        exit;
+        break;
+    
+    // Eliminar cliente (AJAX)
+    case 'deleteClient':
+        $cedula = $_POST['cedula'] ?? null;
+        if ($cedula) {
+            $resultado = $model->delete($cedula);
+            if ($resultado) {
+                echo json_encode(['success' => true, 'message' => 'Cliente eliminado correctamente']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al eliminar el cliente']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Cédula no proporcionada']);
+        }
+        exit;
+        break;
+    
     // Almacena un nuevo cliente
     case 'store':
         $data = [

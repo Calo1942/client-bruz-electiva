@@ -45,7 +45,7 @@ $(document).ready(async function() {
         
         // Obtener datos del cliente
         $.ajax({
-            url: 'src/Controllers/ClientController.php',
+            url: '',
             method: 'POST',
             dataType: 'JSON',
             data: {
@@ -79,7 +79,7 @@ $(document).ready(async function() {
         
         // Obtener datos del cliente
         $.ajax({
-            url: 'src/Controllers/ClientController.php',
+            url: '',
             method: 'POST',
             dataType: 'JSON',
             data: {
@@ -113,7 +113,7 @@ $(document).ready(async function() {
         
         if (confirm('¿Está seguro de eliminar este cliente?')) {
             $.ajax({
-                url: 'src/Controllers/ClientController.php',
+                url: '',
                 method: 'POST',
                 dataType: 'JSON',
                 data: {

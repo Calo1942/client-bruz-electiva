@@ -10,14 +10,14 @@ class FrontController {
 
     // Constructor: procesa la URL
     public function __construct() {
-        $this->url = $_GET['url'] ?? 'dashboard';
+        $this->url = $_GET['url'] ?? 'client';
         $this->parseUrl();
     }
 
     // Analiza la URL para separar controlador, método y parámetros
     private function parseUrl() {
         $url = explode('/', filter_var(rtrim($this->url, '/'), FILTER_SANITIZE_URL));
-        $this->controller = $url[0] ?? 'dashboard';
+        $this->controller = $url[0] ?? 'client';
         $this->method = $url[1] ?? '';
         $this->params = array_slice($url, 2);
     }

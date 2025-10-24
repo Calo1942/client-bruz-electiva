@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS `db_bruz_deporte`;
-CREATE DATABASE `db_bruz_deporte`
+DROP DATABASE IF EXISTS `db_bruz_electiva`;
+CREATE DATABASE `db_bruz_electiva`
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_general_ci;
-USE `db_bruz_deporte`;
+USE `db_bruz_electiva`;
 
 CREATE TABLE cliente (
     cedula VARCHAR(10) PRIMARY KEY,

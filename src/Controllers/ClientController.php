@@ -81,7 +81,13 @@ switch ($action) {
             'correo' => $_POST['correo'] ?? null,
             'telefono' => $_POST['telefono'] ?? null
         ];
-        $model->store($data);
+        
+        $resultado = $model->store($data);
+
+        if (!$resultado) {
+            echo("<script> alert('Error inesperado al agregar cliente'); </script> ");
+        }
+
         break;
     // Actualiza un cliente existente
     case 'update':
@@ -93,28 +99,27 @@ switch ($action) {
                 'correo' => $_POST['correo'] ?? null,
                 'telefono' => $_POST['telefono'] ?? null
             ];
-            $model->update($cedula, $data);
+
+            $resultado = $model->update($cedula, $data);
+            if (!$resultado) {
+                echo("<script> alert('Error inesperado al actualizar cliente'); </script> ");
+            }
         }
         break;
     // Elimina un cliente
     case 'delete':
         $cedula = $_POST['delete'] ?? null;
         if ($cedula) {
-            $model->delete($cedula);
+            $resultado = $model->delete($cedula);
+            if (!$resultado) {
+                echo("<script> alert('Error inesperado al eliminar cliente'); </script> ");
+            }
         }
-        break;
-    // Muestra detalles de un cliente específico
-    case 'show':
-        $cedula = $_POST['show'];
-        $cliente = $model->find($cedula);
         break;
     // Lista clientes si no hay acción
     default:
         break;
 }
-
-// Obtiene todos los clientes para la vista
-$clientes = $model->findAll();
 
 // Incluye la vista de la lista de clientes.
 include __ROOT__ . '/views/client/client.php';

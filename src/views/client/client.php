@@ -37,8 +37,9 @@
         <!-- Scripts principales -->
         <?php echo $scripts_links; ?>
         
-        <!-- Scripts específicos de la página -->
+        <!-- Scripts específicos de la página 
         <script type="module" src="src/assets/js/clientValidation.js"></script>
+        -->
         <script src="src/assets/js/clientDataTable.js"></script>
 
         <!-- Modales -->

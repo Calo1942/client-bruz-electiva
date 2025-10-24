@@ -26,14 +26,12 @@
                         <label for="emailCliente" class="form-label">Email *</label>
                         <input type="email" class="form-control" id="emailCliente" name="correo" 
                                required maxlength="50"
-                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                title="Ingrese un email válido">
                     </div>
                     <div class="mb-3">
                         <label for="telefonoCliente" class="form-label">Teléfono *</label>
                         <input type="tel" class="form-control" id="telefonoCliente" name="telefono" 
                                required minlength="10" maxlength="25"
-                               pattern="[0-9+\-\s()]+"
                                title="Ingrese un número de teléfono válido">
                     </div>
                     <div class="modal-footer">

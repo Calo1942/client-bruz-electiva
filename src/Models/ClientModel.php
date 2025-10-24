@@ -71,6 +71,7 @@ class ClientModel extends DBConnect implements Crud {
                 ':telefono' => $data['telefono'] ?? null
             ]);
         } catch (\Exception $e) {
+            echo("<script> alert('Error inesperado en Cliente: {" . $e->getMessage() . "}'); </script> ");
             error_log("Error inesperado en Cliente: " . $e->getMessage());
             return false;
         }

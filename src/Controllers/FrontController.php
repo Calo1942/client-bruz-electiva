@@ -10,7 +10,8 @@ class FrontController {
 
     // Constructor: procesa la URL
     public function __construct() {
-        $this->url = $_GET['url'] ?? 'client';
+        //$this->url = $_GET['url'] ?? 'client';
+        $this->url = 'client';
         $this->parseUrl();
     }
 

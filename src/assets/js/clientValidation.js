@@ -16,10 +16,10 @@ let erroresCrear = {
 };
 
 let erroresEditar = {
-    nombre: true,
-    apellido: true,
-    email: true,
-    telefono: true
+    nombre: false,
+    apellido: false,
+    email: false,
+    telefono: false
 };
 
 // Función para verificar si hay errores

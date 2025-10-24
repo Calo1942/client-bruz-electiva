@@ -1,0 +1,31 @@
+{
+    "name": "un_carlos/mvc-custom-design-un-carlos",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "BruzDeporte\\": "src/"
+        },
+        "files": [
+            "src/config/components/configSystem.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Anye",
+            "email": "carlosj.pineda07@gmail.com"
+        },
+        {
+            "name": "Enye",
+            "email": "carlosj.pineda07@gmail.com"
+        },
+        {
+            "name": "Heliscar",
+            "email": "zuhairromero14@gmail.com"
+        },
+        {
+            "name": "Un Carlos",
+            "email": "carlosj.pineda07@gmail.com"
+        }
+    ],
+    "require": {}
+}

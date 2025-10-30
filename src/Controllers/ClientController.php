@@ -32,6 +32,11 @@ if ($action) {
     switch ($action) {
         case 'store':
             $data = [];
+            // Incluir la clave primaria (cedula) si está presente
+            if (isset($_POST[$module_config['primary_key']])) {
+                $data[$module_config['primary_key']] = $_POST[$module_config['primary_key']];
+            }
+            // Incluir los demás campos
             foreach ($module_config['fields'] as $field) {
                 $data[$field] = $_POST[$field] ?? '';
             }

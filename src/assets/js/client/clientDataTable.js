@@ -4,9 +4,9 @@ $(document).ready(async function() {
             url: '',
             method: 'POST',
             data: {
-                getClients: true
+                getAll: true
             },
-            dataSrc: ''
+            dataSrc: 'data'
         },
         columns: [
             {data: 'cedula'},    
@@ -68,8 +68,7 @@ $(document).ready(async function() {
             method: 'POST',
             dataType: 'JSON',
             data: {
-                cedula: cedula,
-                showClient: true
+                show: cedula
             },
             success: function(response) {
                 if (response.success) {
@@ -131,21 +130,53 @@ $(document).ready(async function() {
             method: 'POST',
             dataType: 'JSON',
             data: {
-                cedula: cedula,
-                showClient: true
+                show: cedula
             },
             success: function(response) {
                 if (response.success) {
-            
                     $('#editarCedula').val(response.data.cedula);
                     $('#editarNombre').val(response.data.nombre);
                     $('#editarApellido').val(response.data.apellido);
                     $('#editarCorreo').val(response.data.correo);
                     $('#editarTelefono').val(response.data.telefono);
                     
+                    $('#formEditarCliente .is-valid, #formEditarCliente .is-invalid').removeClass('is-valid is-invalid');
+                    
                     $('#editarClienteModal').modal('show');
                 } else {
                     alert('Error al cargar los datos del cliente');
+                }
+            },
+            error: function() {
+                alert('Error de conexión');
+            }
+        });
+    });
+
+    $(document).on('submit', '#formEditarCliente', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            cedula: $('#editarCedula').val(),
+            nombre: $('#editarNombre').val(),
+            apellido: $('#editarApellido').val(),
+            correo: $('#editarCorreo').val(),
+            telefono: $('#editarTelefono').val(),
+            update: true
+        };
+        
+        $.ajax({
+            url: '',
+            method: 'POST',
+            dataType: 'JSON',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    alert('Cliente actualizado correctamente');
+                    $('#editarClienteModal').modal('hide');
+                    tblClient.ajax.reload();
+                } else {
+                    alert('Error al actualizar el cliente: ' + response.message);
                 }
             },
             error: function() {
@@ -163,8 +194,7 @@ $(document).ready(async function() {
                 method: 'POST',
                 dataType: 'JSON',
                 data: {
-                    cedula: cedula,
-                    deleteClient: true
+                    delete: cedula
                 },
                 success: function(response) {
                     if (response.success) {

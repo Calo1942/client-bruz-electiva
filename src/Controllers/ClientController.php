@@ -15,18 +15,11 @@ if (isset($_POST['getClients'])) {
     $action = 'showClient';
 } elseif (isset($_POST['deleteClient'])) {
     $action = 'deleteClient';
+} elseif (isset($_POST['store'])) {
+    $action = 'store';
 }
 
-// Detecta la acción solicitada por POST
-if (isset($_POST['store'])) {
-    $action = 'store';
-} elseif (isset($_POST['update'])) {
-    $action = 'update';
-} elseif (isset($_POST['delete'])) {
-    $action = 'delete';
-} elseif (isset($_POST['show'])) {
-    $action = 'show';
-}
+
 
 switch ($action) {
     // Obtener todos los clientes para DataTable (AJAX)
@@ -83,11 +76,13 @@ switch ($action) {
         ];
         
         $resultado = $model->store($data);
-
-        if (!$resultado) {
-            echo("<script> alert('Error inesperado al agregar cliente'); </script> ");
+        if ($resultado) {
+            echo json_encode(['success' => true, 'message' => 'Cliente agregado correctamente']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error al agregar el cliente']);
         }
-
+        
+        exit;
         break;
     // Actualiza un cliente existente
     case 'update':

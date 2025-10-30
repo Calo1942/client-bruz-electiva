@@ -75,7 +75,7 @@ function inicializarValidacionesCrear() {
         await validarCampoTiempoReal(campo, validarTelefono, erroresCrear, 'telefono', formulario);
     });
 
-    // Validación al enviar el formulario
+    // Validación al enviar el formulario - solo validar, no prevenir envío
     formulario.on('submit', function(e) {
         // Verificar si hay errores
         if (hayErrores(erroresCrear)) {
@@ -84,7 +84,7 @@ function inicializarValidacionesCrear() {
             return false;
         }
         
-        // Si no hay errores, permitir el envío normal del formulario
+        // Si no hay errores, permitir el envío (el AJAX handler se encargará)
         return true;
     });
 

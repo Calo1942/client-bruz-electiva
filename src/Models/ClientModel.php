@@ -2,133 +2,128 @@
 
 namespace BruzDeporte\Models;
 
-use PDOException;
 use Exception;
 use BruzDeporte\config\connect\DBConnect;
 use BruzDeporte\config\interfaces\Crud;
+use BruzDeporte\Helpers\Validations;
+use BruzDeporte\Helpers\ApiResponse;
 
-class ClientModel extends DBConnect implements Crud {
+class ClientModel extends DBConnect implements Crud
+{
+    use Validations, ApiResponse;
+    
+    protected $table = 'cliente';
+    protected $idField = 'cedula';
+    protected $fields = [
+        'cedula' => 'validate_cedula',
+        'nombre' => 'validate_names',
+        'apellido' => 'validate_names',
+        'correo' => 'validate_email',
+        'telefono' => 'validate_telefono',
+        'estatus_activo' => 'validate_boolean'
+    ];
+    protected $module_name = [
+        'singular' => 'Cliente',
+        'plural' => 'Clientes'
+    ];
 
-    private $cedula;
-    private $nombre;
-    private $apellido;
-    private $correo;
-    private $telefono;
-
-    private function getCedula() {
-        return $this->cedula;
-    }
-
-    private function getNombre() {
-        return $this->nombre;
-    }
-
-    private function getApellido() {
-        return $this->apellido;
-    }
-
-    private function getCorreo() {
-        return $this->correo;
-    }
-
-    private function getTelefono() {
-        return $this->telefono;
-    }
-
-    private function setCedula($cedula) {
-        $this->cedula = $cedula;
-    }
-
-    private function setNombre($nombre) {
-        $this->nombre = $nombre;
-    }
-
-    private function setApellido($apellido) {
-        $this->apellido = $apellido;
-    }
-
-    private function setCorreo($correo) {
-        $this->correo = $correo;
-    }
-
-    private function setTelefono($telefono) {
-        $this->telefono = $telefono;
-    }
-
-    public function store($data) {
-        try{
-            $sql = "INSERT INTO cliente (
-                cedula, nombre, apellido, correo, telefono
-            ) VALUES (
-                :cedula, :nombre, :apellido, :correo, :telefono
-            )";
+    public function store($data)
+    {
+        try {
+            $columns = [];
+            $placeholders = [];
+            $values = [];
+            
+            foreach ($this->fields as $field => $validation) {
+                if (isset($data[$field])) {
+                    if ($validation && !$this->$validation($data[$field])) {
+                        throw new Exception("Campo $field inválido");
+                    }
+                    $columns[] = $field;
+                    $placeholders[] = "?";
+                    $values[] = $data[$field];
+                }
+            }
+            
+            $sql = "INSERT INTO {$this->table} (" . implode(', ', $columns) . ") 
+                    VALUES (" . implode(', ', $placeholders) . ")";
+                    
             $stmt = $this->con->prepare($sql);
-            return $stmt->execute([
-                ':cedula' => $data['cedula'],
-                ':nombre' => $data['nombre'],
-                ':apellido' => $data['apellido'],
-                ':correo' => $data['correo'] ?? null,
-                ':telefono' => $data['telefono'] ?? null
-            ]);
+            if ($stmt->execute($values)) {
+                return self::success(201, "{$this->module_name['singular']} creado exitosamente");
+            }
+            throw new Exception('Error al guardar');
+            
         } catch (\Exception $e) {
-            echo("<script> alert('Error inesperado en Cliente: {" . $e->getMessage() . "}'); </script> ");
-            error_log("Error inesperado en Cliente: " . $e->getMessage());
-            return false;
+            return self::error(500, 'Error al almacenar', $e->getMessage());
         }
     }
 
-    public function findAll() {
+    public function findAll()
+    {
         try {
-            $stmt = $this->con->query("SELECT * FROM cliente");
-            return $stmt->fetchAll();
+            $stmt = $this->con->query("SELECT * FROM {$this->table} WHERE estatus_activo = 1");
+            $result = $stmt->fetchAll();
+            return self::success(200, "{$this->module_name['plural']} obtenidos", $result);
+        } catch (\Exception $e) {
+            return self::error(500, 'Error al obtener', $e->getMessage());
+        }
+    }
 
-        } catch (\PDOException $e) {
-            error_log("Error en ClientModel::findAll: " . $e->getMessage());
-            return false;
-        }
-    }
- 
-    public function find($cedula) {
+    public function find($id)
+    {
         try {
-            $stmt = $this->con->prepare("SELECT * FROM cliente WHERE cedula = ?");
-            $stmt->execute([$cedula]);
-            return $stmt->fetch();
-        } catch (\PDOException $e) {
-            error_log("Error al buscar Cliente: " . $e->getMessage());
-            return false;
+            $stmt = $this->con->prepare("SELECT * FROM {$this->table} WHERE {$this->idField} = ?");
+            $stmt->execute([$id]);
+            $result = $stmt->fetch();
+            return self::success(200, "{$this->module_name['singular']} obtenido", $result);
+        } catch (\Exception $e) {
+            return self::error(500, 'Error al obtener', $e->getMessage());
         }
     }
- 
-    public function update($cedula, $data) {
-        $sql = "UPDATE cliente SET
-            nombre = :nombre,
-            apellido = :apellido,
-            correo = :correo,
-            telefono = :telefono
-            WHERE cedula = :cedula";
-        try {    
+
+    public function update($id, $data)
+    {
+        try {
+            $updates = [];
+            $values = [];
+            
+            foreach ($this->fields as $field => $validation) {
+                if (isset($data[$field])) {
+                    if ($validation && !$this->$validation($data[$field])) {
+                        throw new Exception("Campo $field inválido");
+                    }
+                    $updates[] = "$field = ?";
+                    $values[] = $data[$field];
+                }
+            }
+            
+            $values[] = $id;
+            $sql = "UPDATE {$this->table} SET " . implode(', ', $updates) . " 
+                    WHERE {$this->idField} = ?";
+                    
             $stmt = $this->con->prepare($sql);
-            $params = [
-                ':nombre' => $data['nombre'],
-                ':apellido' => $data['apellido'],
-                ':correo' => $data['correo'] ?? null,
-                ':telefono' => $data['telefono'] ?? null,
-                ':cedula' => $cedula
-            ];
-            return $stmt->execute($params);
-        } catch (\PDOException $e) {
-            error_log("Error en ClientModel::update: " . $e->getMessage());
-            return false;
+            if ($stmt->execute($values)) {
+                return self::success(200, "{$this->module_name['singular']} actualizado");
+            }
+            throw new Exception('Error al actualizar');
+            
+        } catch (\Exception $e) {
+            return self::error(500, 'Error al actualizar', $e->getMessage());
         }
     }
 
-    public function delete($cedula) {
+    public function delete($id)
+    {
         try {
-            $stmt = $this->con->prepare("DELETE FROM cliente WHERE cedula = ?");
-            return $stmt->execute([$cedula]);
-        } catch (\PDOException $e) {
-            error_log("Error al eliminar Cliente: " . $e->getMessage());
-            return false;
+            $sql = "UPDATE {$this->table} SET estatus_activo = 0 WHERE {$this->idField} = ?";
+            $stmt = $this->con->prepare($sql);
+            if ($stmt->execute([$id])) {
+                return self::success(200, "{$this->module_name['singular']} eliminado");
+            }
+            throw new Exception('Error al eliminar');
+        } catch (\Exception $e) {
+            return self::error(500, 'Error al eliminar', $e->getMessage());
         }
     }
 }

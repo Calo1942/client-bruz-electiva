@@ -30,6 +30,7 @@ CREATE TABLE talla (
 CREATE TABLE producto (
     id_producto INT(11) PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
+    imagen VARCHAR(100),
     descripcion TEXT NOT NULL,
     stock INT(11) NOT NULL DEFAULT 0,
     precio_detal DECIMAL(10,2) NOT NULL,

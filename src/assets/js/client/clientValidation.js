@@ -4,7 +4,7 @@ import {
     validarApellido, 
     validarEmail, 
     validarTelefono 
-} from './helpers/validation.js';
+} from '../helpers/validation.js';
 
 // Objetos para rastrear errores de validación
 let erroresCrear = {

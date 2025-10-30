@@ -122,7 +122,38 @@ $(document).ready(async function() {
         });
     });
 
-   
+    $(document).on('click', '.btn-editar', async function() {
+        const cedula = this.value;
+        
+        
+        $.ajax({
+            url: '',
+            method: 'POST',
+            dataType: 'JSON',
+            data: {
+                cedula: cedula,
+                showClient: true
+            },
+            success: function(response) {
+                if (response.success) {
+            
+                    $('#editarCedula').val(response.data.cedula);
+                    $('#editarNombre').val(response.data.nombre);
+                    $('#editarApellido').val(response.data.apellido);
+                    $('#editarCorreo').val(response.data.correo);
+                    $('#editarTelefono').val(response.data.telefono);
+                    
+                    $('#editarClienteModal').modal('show');
+                } else {
+                    alert('Error al cargar los datos del cliente');
+                }
+            },
+            error: function() {
+                alert('Error de conexión');
+            }
+        });
+    });
+    
     $(document).on('click', '.btn-eliminar', async function() {
         const cedula = this.value;
         

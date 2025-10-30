@@ -15,8 +15,7 @@ class CategoryModel extends DBConnect implements Crud
     protected $table = 'categoria';
     protected $idField = 'id_categoria';
     protected $fields = [
-        'nombre' => 'validate_names',
-        'status_activo' => 'validate_numbers',
+        'nombre' => 'validate_names'
     ];
     protected $module_name = [
         'singular' => 'Categoría',
@@ -58,7 +57,7 @@ class CategoryModel extends DBConnect implements Crud
     public function findAll()
     {
         try {
-            $stmt = $this->con->query("SELECT * FROM {$this->table} WHERE estatus_activo = 1");
+            $stmt = $this->con->query("SELECT * FROM {$this->table}");
             $result = $stmt->fetchAll();
             return self::success(200, "{$this->module_name['plural']} obtenidos", $result);
         } catch (\Exception $e) {
@@ -112,7 +111,7 @@ class CategoryModel extends DBConnect implements Crud
     public function delete($id)
     {
         try {
-            $sql = "UPDATE {$this->table} SET estatus_activo = 0 WHERE {$this->idField} = ?";
+            $sql = "DELETE FROM {$this->table} WHERE {$this->idField} = ?";
             $stmt = $this->con->prepare($sql);
             if ($stmt->execute([$id])) {
                 return self::success(200, "{$this->module_name['singular']} eliminado");

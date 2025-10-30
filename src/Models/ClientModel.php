@@ -20,7 +20,6 @@ class ClientModel extends DBConnect implements Crud
         'apellido' => 'validate_names',
         'correo' => 'validate_email',
         'telefono' => 'validate_telefono',
-        'estatus_activo' => 'validate_boolean'
     ];
     protected $module_name = [
         'singular' => 'Cliente',
@@ -47,7 +46,7 @@ class ClientModel extends DBConnect implements Crud
             
             $sql = "INSERT INTO {$this->table} (" . implode(', ', $columns) . ") 
                     VALUES (" . implode(', ', $placeholders) . ")";
-                    
+            
             $stmt = $this->con->prepare($sql);
             if ($stmt->execute($values)) {
                 return self::success(201, "{$this->module_name['singular']} creado exitosamente");
@@ -62,7 +61,7 @@ class ClientModel extends DBConnect implements Crud
     public function findAll()
     {
         try {
-            $stmt = $this->con->query("SELECT * FROM {$this->table} WHERE estatus_activo = 1");
+            $stmt = $this->con->query("SELECT * FROM {$this->table}");
             $result = $stmt->fetchAll();
             return self::success(200, "{$this->module_name['plural']} obtenidos", $result);
         } catch (\Exception $e) {
@@ -116,7 +115,7 @@ class ClientModel extends DBConnect implements Crud
     public function delete($id)
     {
         try {
-            $sql = "UPDATE {$this->table} SET estatus_activo = 0 WHERE {$this->idField} = ?";
+            $sql = "DELETE FROM {$this->table} WHERE {$this->idField} = ?";
             $stmt = $this->con->prepare($sql);
             if ($stmt->execute([$id])) {
                 return self::success(200, "{$this->module_name['singular']} eliminado");

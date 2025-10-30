@@ -21,7 +21,6 @@ class ProductModel extends DBConnect implements Crud
         'precio_detal' => 'validate_precio',
         'precio_mayor' => 'validate_precio',
         'id_categoria' => 'validate_id',
-        'estatus_activo' => 'validate_boolean'
     ];
     protected $module_name = [
         'singular' => 'Producto',
@@ -48,7 +47,7 @@ class ProductModel extends DBConnect implements Crud
             
             $sql = "INSERT INTO {$this->table} (" . implode(', ', $columns) . ") 
                     VALUES (" . implode(', ', $placeholders) . ")";
-                    
+            
             $stmt = $this->con->prepare($sql);
             if ($stmt->execute($values)) {
                 return self::success(201, "{$this->module_name['singular']} creado exitosamente");
@@ -63,7 +62,7 @@ class ProductModel extends DBConnect implements Crud
     public function findAll()
     {
         try {
-            $stmt = $this->con->query("SELECT * FROM {$this->table} WHERE estatus_activo = 1");
+            $stmt = $this->con->query("SELECT * FROM {$this->table}");
             $result = $stmt->fetchAll();
             return self::success(200, "{$this->module_name['plural']} obtenidos", $result);
         } catch (\Exception $e) {
@@ -117,7 +116,7 @@ class ProductModel extends DBConnect implements Crud
     public function delete($id)
     {
         try {
-            $sql = "UPDATE {$this->table} SET estatus_activo = 0 WHERE {$this->idField} = ?";
+            $sql = "DELETE FROM {$this->table} WHERE {$this->idField} = ?";
             $stmt = $this->con->prepare($sql);
             if ($stmt->execute([$id])) {
                 return self::success(200, "{$this->module_name['singular']} eliminado");

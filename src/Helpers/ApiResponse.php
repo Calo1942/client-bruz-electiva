@@ -5,7 +5,7 @@ namespace BruzDeporte\Helpers;
 trait ApiResponse {
     public static function success($code = 200, $message, $data = null) {
         return [
-            'status' => 'success',
+            'success' => true,
             'code' => $code,
             'message' => $message,
             'data' => $data
@@ -15,7 +15,7 @@ trait ApiResponse {
 
     public static function error($code = 400, $message, $error = null) {
         return [
-            'status' => 'error',
+            'success' => false,
             'code' => $code,
             'message' => $message,
             'error' => $error

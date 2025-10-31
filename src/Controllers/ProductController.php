@@ -7,7 +7,7 @@ use BruzDeporte\Models\CategoryModel;
 
 $module_config = [
     'primary_key' => 'id_producto',
-    'fields' => ['nombre', 'descripcion', 'stock', 'precio_detal', 'precio_mayor', 'id_categoria'],
+    'fields' => ['nombre', 'descripcion', 'stock', 'precio_detal', 'precio_mayor', 'id_categoria', 'imagen'],
     'view_path' => 'product/product.php'
 ];
 

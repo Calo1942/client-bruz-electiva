@@ -7,10 +7,11 @@ use BruzDeporte\config\connect\DBConnect;
 use BruzDeporte\config\interfaces\Crud;
 use BruzDeporte\Helpers\Validations;
 use BruzDeporte\Helpers\ApiResponse;
+use BruzDeporte\Helpers\ImageHandler;
 
 class ProductModel extends DBConnect implements Crud
 {
-    use Validations, ApiResponse;
+    use Validations, ApiResponse, ImageHandler;
     
     protected $table = 'producto';
     protected $idField = 'id_producto';
@@ -21,6 +22,7 @@ class ProductModel extends DBConnect implements Crud
         'precio_detal' => 'validate_precio',
         'precio_mayor' => 'validate_precio',
         'id_categoria' => 'validate_id',
+        'imagen' => 'validate_nombre_archivo',
     ];
     protected $module_name = [
         'singular' => 'Producto',
@@ -43,6 +45,14 @@ class ProductModel extends DBConnect implements Crud
                     $placeholders[] = "?";
                     $values[] = $data[$field];
                 }
+            }
+            
+            // Manejo de imagen si existe
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
+                $imagePath = $this->uploadImage($_FILES['imagen']);
+                $columns[] = 'imagen';
+                $placeholders[] = "?";
+                $values[] = $imagePath;
             }
             
             $sql = "INSERT INTO {$this->table} (" . implode(', ', $columns) . ") 
@@ -85,6 +95,13 @@ class ProductModel extends DBConnect implements Crud
     public function update($id, $data)
     {
         try {
+            // Obtener imagen actual
+            $currentImage = null;
+            $product = $this->find($id);
+            if ($product['success'] && isset($product['data']['imagen'])) {
+                $currentImage = $product['data']['imagen'];
+            }
+            
             $updates = [];
             $values = [];
             
@@ -96,6 +113,13 @@ class ProductModel extends DBConnect implements Crud
                     $updates[] = "$field = ?";
                     $values[] = $data[$field];
                 }
+            }
+            
+            // Manejo de nueva imagen
+            if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== UPLOAD_ERR_NO_FILE) {
+                $imagePath = $this->uploadImage($_FILES['imagen'], $currentImage);
+                $updates[] = "imagen = ?";
+                $values[] = $imagePath;
             }
             
             $values[] = $id;
@@ -116,6 +140,12 @@ class ProductModel extends DBConnect implements Crud
     public function delete($id)
     {
         try {
+            // Obtener imagen antes de eliminar
+            $product = $this->find($id);
+            if ($product['success'] && isset($product['data']['imagen'])) {
+                $this->deleteImage($product['data']['imagen']);
+            }
+            
             $sql = "DELETE FROM {$this->table} WHERE {$this->idField} = ?";
             $stmt = $this->con->prepare($sql);
             if ($stmt->execute([$id])) {

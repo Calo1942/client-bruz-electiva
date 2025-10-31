@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <!-- Formulario para agregar un nuevo producto -->
-            <form action="" method="POST">
+            <form id="formAgregarProducto" action="" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto</h5>
                     <!-- Botón para cerrar el modal -->

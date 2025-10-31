@@ -10,4 +10,6 @@ export const regExp = {
     cedula: /^[0-9]{7,15}$/,
     hoy: new Date().toISOString().split("T")[0], 
     descripcion: /^.{2,100}$/,
+    precio: /^[0-9]+(\.[0-9]{1,2})?$/, // Permite decimales con hasta 2 decimales
+    stock: /^[0-9]+$/, // Solo números enteros positivos
 }

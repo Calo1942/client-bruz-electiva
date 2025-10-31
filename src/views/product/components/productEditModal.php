@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <!-- Formulario para editar un producto existente -->
-            <form action="" method="POST">
+            <form id="formEditarProducto" action="" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editarProductoModalLabel">Editar Producto</h5>
                     <!-- Botón para cerrar el modal -->

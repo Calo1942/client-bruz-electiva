@@ -17,27 +17,30 @@
 
     <!-- Barra lateral -->
     <div class="p-0 bg-dark sidebar">
-        <?php require_once __DIR__ . '/../commons/sidebar.php'; ?>
+        <?php require_once __DIR__ . '/../components/sidebar.php'; ?>
     </div>
 
     <!-- Contenedor principal -->
     <div class="flex-grow-1 d-flex flex-column">
 
         <!-- Contenido del navbar -->
-        <?php require_once __DIR__ . '/../commons/navbar.php'; ?>
+        <?php require_once __DIR__ . '/../components/navbar.php'; ?>
 
         <!-- Contenido principal -->
         <main class="flex-grow-1 p-4 bg-light">
             <?php
-            // para cargar la tabla
+            // para cargar la tabla de categorías
             require_once 'components/categoryDataTable.php';
             ?>
         </main>
 
-        <?php include 'src/config/components/Front/linksFront.php';
-        echo $scripts_links;
-        ?>
-       
+        <!-- Scripts principales -->
+        <?php echo $scripts_links; ?>
+        
+        <script type="module" src="src/assets/js/category/categoryValidation.js"></script>
+        
+        <script src="src/assets/js/category/categoryDataTable.js"></script>
+
         <!-- Modales -->
         <?php require_once 'components/categoryCreateModal.php'; ?>
         <?php require_once 'components/categoryEditModal.php'; ?>

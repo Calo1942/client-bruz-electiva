@@ -222,7 +222,9 @@ main {
 }
 
 /* Estilo para la tabla DataTable - Integrada con el fondo */
-#clientTable {
+#clientTable,
+#categoryTable,
+#productTable {
     border-collapse: separate;
     border-spacing: 0;
     border-radius: 8px;
@@ -234,7 +236,9 @@ main {
 }
 
 /* Encabezados de la tabla */
-#clientTable thead th {
+#clientTable thead th,
+#categoryTable thead th,
+#productTable thead th {
     background-color: var(--primary-500);
     color: var(--secondary-100);
     font-family: 'Poppins', sans-serif;
@@ -245,16 +249,22 @@ main {
 }
 
 /* Filas de la tabla */
-#clientTable tbody tr {
+#clientTable tbody tr,
+#categoryTable tbody tr,
+#productTable tbody tr {
     background-color: var(--secondary-100);
     transition: background-color 0.2s ease;
 }
 
-#clientTable tbody tr:hover {
+#clientTable tbody tr:hover,
+#categoryTable tbody tr:hover,
+#productTable tbody tr:hover {
     background-color: var(--secondary-200);
 }
 
-#clientTable tbody td {
+#clientTable tbody td,
+#categoryTable tbody td,
+#productTable tbody td {
     padding: 12px 15px; /* Aumentar padding horizontal */
     border-bottom: 1px solid var(--secondary-200);
     text-align: center;
@@ -263,41 +273,55 @@ main {
 }
 
 /* Botones de acción en DataTable - Usar los mismos estilos que los botones personalizados */
-#clientTable .btn {
+#clientTable .btn,
+#categoryTable .btn,
+#productTable .btn {
     width: 30px; 
     height: 30px;
     border-radius: 100%;
 }
 
 /* Estilo para botón de ver/detalle */
-#clientTable .btn-primary {
+#clientTable .btn-primary,
+#categoryTable .btn-primary,
+#productTable .btn-primary {
     background-color: var(--blue-500); 
     color: var(--secondary-100);
 }
 
-#clientTable .btn-primary:hover {
+#clientTable .btn-primary:hover,
+#categoryTable .btn-primary:hover,
+#productTable .btn-primary:hover {
     background-color: var(--blue-600);
     color: var(--secondary-100);
 }
 
 /* Estilo para botón de editar */
-#clientTable .btn-secondary {
+#clientTable .btn-secondary,
+#categoryTable .btn-secondary,
+#productTable .btn-secondary {
     background-color: var(--secondary-500); 
     color: var(--secondary-100);
 }
 
-#clientTable .btn-secondary:hover {
+#clientTable .btn-secondary:hover,
+#categoryTable .btn-secondary:hover,
+#productTable .btn-secondary:hover {
     background-color: var(--secondary-600);
     color: var(--secondary-100);
 }
 
 /* Estilo para botón de eliminar */
-#clientTable .btn-danger {
+#clientTable .btn-danger,
+#categoryTable .btn-danger,
+#productTable .btn-danger {
     background-color: var(--primary-400); 
     color: var(--secondary-100);
 }
 
-#clientTable .btn-danger:hover {
+#clientTable .btn-danger:hover,
+#categoryTable .btn-danger:hover,
+#productTable .btn-danger:hover {
     background-color: var(--primary-500);
     color: var(--secondary-100);
 }
@@ -447,16 +471,24 @@ main {
 
 /* Responsive para DataTable */
 @media (max-width: 768px) {
-    #clientTable {
+    #clientTable,
+    #categoryTable,
+    #productTable {
         font-size: 0.9rem;
     }
     
     #clientTable thead th,
-    #clientTable tbody td {
+    #clientTable tbody td,
+    #categoryTable thead th,
+    #categoryTable tbody td,
+    #productTable thead th,
+    #productTable tbody td {
         padding: 8px 6px;
     }
     
-    #clientTable .btn {
+    #clientTable .btn,
+    #categoryTable .btn,
+    #productTable .btn {
         padding: 4px 8px;
         font-size: 0.8rem;
     }

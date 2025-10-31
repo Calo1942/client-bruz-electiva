@@ -110,3 +110,47 @@ export async function validarEmail(email) {
     return true;
   }
 }
+
+export async function validarPrecio(precio) {
+  // Precio: debe ser un número positivo, puede tener decimales
+  const valor = precio.val().trim();
+  if (!valor || valor === '' || parseFloat(valor) <= 0) {
+    validarCampo(precio, false);
+    return false;
+  }
+  if (!regExp.precio.test(valor)) {
+    validarCampo(precio, false);
+    return false;
+  } else {
+    validarCampo(precio, true);
+    return true;
+  }
+}
+
+export async function validarStock(stock) {
+  // Stock: debe ser un número entero positivo
+  const valor = stock.val().trim();
+  if (!valor || valor === '' || parseInt(valor) < 0) {
+    validarCampo(stock, false);
+    return false;
+  }
+  if (!regExp.stock.test(valor)) {
+    validarCampo(stock, false);
+    return false;
+  } else {
+    validarCampo(stock, true);
+    return true;
+  }
+}
+
+export async function validarCategoria(categoria) {
+  // Categoría: debe estar seleccionada (valor distinto de vacío)
+  const valor = categoria.val();
+  if (!valor || valor === '' || valor === '0') {
+    validarCampo(categoria, false);
+    return false;
+  } else {
+    validarCampo(categoria, true);
+    return true;
+  }
+}

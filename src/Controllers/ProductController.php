@@ -3,6 +3,7 @@
 namespace BruzDeporte\Controllers;
 
 use BruzDeporte\Models\ProductModel;
+use BruzDeporte\Models\CategoryModel;
 
 $module_config = [
     'primary_key' => 'id_producto',
@@ -86,6 +87,14 @@ if ($action) {
             }
             exit;
     }
+}
+
+// Cargar categorías para los select de los modales
+$categoryModel = new CategoryModel();
+$categoriesResult = $categoryModel->findAll();
+$categories = [];
+if ($categoriesResult && $categoriesResult['success']) {
+    $categories = $categoriesResult['data'] ?? [];
 }
 
 // Incluir vista

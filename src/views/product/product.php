@@ -17,33 +17,34 @@
 <body>
     <!-- Barra lateral -->
     <div class="p-0 bg-dark sidebar">
-        <?php require_once __DIR__ . '/../commons/sidebar.php'; ?>
+        <?php require_once __DIR__ . '/../components/sidebar.php'; ?>
     </div>
 
     <!-- Contenedor principal -->
     <div class="flex-grow-1 d-flex flex-column">
 
         <!-- Contenido del navbar -->
-        <?php require_once __DIR__ . '/../commons/navbar.php'; ?>
+        <?php require_once __DIR__ . '/../components/navbar.php'; ?>
 
         <!-- Contenido principal -->
         <main class="flex-grow-1 p-4 bg-light">
             <?php
-                // para cargar la tabla
+                // para cargar la tabla de productos
                 require_once 'components/productDataTable.php';
             ?>
         </main>
+
+        <!-- Scripts principales -->
+        <?php echo $scripts_links; ?>
+        
+        <script type="module" src="src/assets/js/product/productValidation.js"></script>
+        
+        <script src="src/assets/js/product/productDataTable.js"></script>
 
         <!-- Modales -->
         <?php require_once 'components/productCreateModal.php'; ?>
         <?php require_once 'components/productEditModal.php'; ?>
         <?php require_once 'components/productViewModal.php'; ?>
-
-        <?php include 'src/views/commons/linksFront.php';
-        echo $scripts_links;
-        ?>
-        <script src="src\assets\js\product\productConfigDatable.js"></script>
-        <script src="src\assets\js\commons\templateDatables.js"></script>
     </div>
 
 </body>

@@ -93,7 +93,7 @@ if ($action) {
 $categoryModel = new CategoryModel();
 $categoriesResult = $categoryModel->findAll();
 $categories = [];
-if ($categoriesResult && $categoriesResult['success']) {
+if ($categoriesResult && $categoriesResult['status'] === 'success') {
     $categories = $categoriesResult['data'] ?? [];
 }
 

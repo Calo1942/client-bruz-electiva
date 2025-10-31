@@ -11,6 +11,12 @@ $(document).ready(async function() {
         columns: [
             {data: 'id_producto'},    
             {data: 'nombre'},
+            {data: 'imagen', render: function(data) {
+                if (data) {
+                    return `<img src="${data}" alt="Imagen producto" style="max-width: 50px; max-height: 50px; border-radius: 4px; object-fit: cover;">`;
+                }
+                return '<span class="text-muted">Sin imagen</span>';
+            }},
             {data: 'id_categoria', render: function(data) {
                 return data || 'Sin categoría';
             }},
@@ -36,8 +42,8 @@ $(document).ready(async function() {
         ],
         autoWidth: false,
         "columnDefs": [
-            {targets: [0, 1, 2, 3, 4], className: 'tabla'},
-            { orderable: false, className: 'acciones', targets: [5] }
+            {targets: [0, 1, 2, 3, 4, 5], className: 'tabla'},
+            { orderable: false, className: 'acciones', targets: [6] }
         ],
         "language":{
             url: "https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json",
@@ -60,10 +66,26 @@ $(document).ready(async function() {
         $('#descripcionProducto').val('');
         $('#detalProducto').val('');
         $('#mayorProducto').val('');
+        $('#imagenProducto').val('');
+        $('#previewImagenProducto').hide().attr('src', '');
        
         $('#formAgregarProducto .is-valid, #formAgregarProducto .is-invalid').removeClass('is-valid is-invalid');
         
         $('#agregarProductoModal').modal('show');
+    });
+
+    // Previsualización de imagen al seleccionar
+    $(document).on('change', '#imagenProducto', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#previewImagenProducto').attr('src', e.target.result).show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#previewImagenProducto').hide().attr('src', '');
+        }
     }); 
 
     $(document).on('click', '.btn-ver', async function() {
@@ -84,6 +106,13 @@ $(document).ready(async function() {
                     $('#verPrecioDetalProducto').text('$' + parseFloat(response.data.precio_detal || 0).toFixed(2));
                     $('#verPrecioMayorProducto').text(response.data.precio_mayor ? '$' + parseFloat(response.data.precio_mayor).toFixed(2) : 'N/A');
                     
+                    // Mostrar imagen si existe
+                    if (response.data.imagen) {
+                        $('#verImagenProducto').attr('src', response.data.imagen).show();
+                    } else {
+                        $('#verImagenProducto').hide();
+                    }
+                    
                     $('#verProductoModal').modal('show');
                 } else {
                     alert('Error al cargar los datos del producto');
@@ -98,20 +127,17 @@ $(document).ready(async function() {
     $(document).on('submit', '#formAgregarProducto', async function(e) {
         e.preventDefault();
         
-        const formData = {
-            nombre: $('#nombreProducto').val(),
-            descripcion: $('#descripcionProducto').val(),
-            precio_detal: $('#detalProducto').val(),
-            precio_mayor: $('#mayorProducto').val() || null,
-            id_categoria: $('#categoriaProducto').val(),
-            store: true
-        };
+        // Crear FormData para enviar datos y archivos
+        const formData = new FormData(this);
+        formData.append('store', true);
         
         $.ajax({
             url: '',
             method: 'POST',
             dataType: 'JSON',
             data: formData,
+            processData: false, // No procesar datos (importante para FormData)
+            contentType: false, // No establecer contentType (dejar que jQuery lo maneje)
             success: function(response) {
                 if (response.success) {
                     alert('Producto agregado correctamente');
@@ -147,6 +173,17 @@ $(document).ready(async function() {
                     $('#editarMayorProducto').val(response.data.precio_mayor || '');
                     $('#editarCategoriaProducto').val(response.data.id_categoria);
                     
+                    // Mostrar imagen actual si existe
+                    if (response.data.imagen) {
+                        $('#previewImagenActual').attr('src', response.data.imagen).show();
+                    } else {
+                        $('#previewImagenActual').hide();
+                    }
+                    
+                    // Limpiar nueva imagen
+                    $('#editarImagenProducto').val('');
+                    $('#previewNuevaImagenProducto').hide().attr('src', '');
+                    
                     $('#formEditarProducto .is-valid, #formEditarProducto .is-invalid').removeClass('is-valid is-invalid');
                     
                     $('#editarProductoModal').modal('show');
@@ -160,24 +197,34 @@ $(document).ready(async function() {
         });
     });
 
+    // Previsualización de nueva imagen al editar
+    $(document).on('change', '#editarImagenProducto', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#previewNuevaImagenProducto').attr('src', e.target.result).show();
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#previewNuevaImagenProducto').hide().attr('src', '');
+        }
+    });
+
     $(document).on('submit', '#formEditarProducto', async function(e) {
         e.preventDefault();
         
-        const formData = {
-            id_producto: $('#editarProductoId').val(),
-            nombre: $('#editarNombreProducto').val(),
-            descripcion: $('#editarDescripcionProducto').val(),
-            precio_detal: $('#editarDetalProducto').val(),
-            precio_mayor: $('#editarMayorProducto').val() || null,
-            id_categoria: $('#editarCategoriaProducto').val(),
-            update: true
-        };
+        // Crear FormData para enviar datos y archivos
+        const formData = new FormData(this);
+        formData.append('update', true);
         
         $.ajax({
             url: '',
             method: 'POST',
             dataType: 'JSON',
             data: formData,
+            processData: false, // No procesar datos (importante para FormData)
+            contentType: false, // No establecer contentType (dejar que jQuery lo maneje)
             success: function(response) {
                 if (response.success) {
                     alert('Producto actualizado correctamente');

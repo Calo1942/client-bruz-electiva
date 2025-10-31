@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <!-- Formulario para agregar un nuevo producto -->
-            <form id="formAgregarProducto" action="" method="POST">
+            <form id="formAgregarProducto" action="" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="agregarProductoModalLabel">Agregar Producto</h5>
                     <!-- Botón para cerrar el modal -->
@@ -61,6 +61,16 @@
                                     <input type="number" class="form-control rounded-0" id="mayorProducto" name="precio_mayor" step="0.01" min="0" placeholder="Precio Mayor">
                                     <label for="mayorProducto">Precio al por mayor (opcional)</label>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo para imagen del producto -->
+                        <div class="col-12">
+                            <label for="imagenProducto" class="form-label">Imagen del Producto (opcional)</label>
+                            <input type="file" class="form-control" id="imagenProducto" name="imagen" accept="image/jpeg,image/png,image/gif,image/webp">
+                            <div class="form-text">Formatos aceptados: JPEG, PNG, GIF, WebP. Tamaño máximo: 5MB</div>
+                            <div class="mt-2">
+                                <img id="previewImagenProducto" src="" alt="Vista previa" style="max-width: 200px; max-height: 200px; display: none; border-radius: 8px; margin-top: 10px;">
                             </div>
                         </div>
                     </div>

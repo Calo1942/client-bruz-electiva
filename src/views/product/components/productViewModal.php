@@ -15,6 +15,11 @@
                         <!-- Nombre del producto -->
                         <h2 class="fs-3 fw-bold mb-4" id="verNombreProducto"></h2>
 
+                        <!-- Imagen del producto -->
+                        <div class="mb-4 text-center">
+                            <img id="verImagenProducto" src="" alt="Imagen del producto" style="max-width: 300px; max-height: 300px; border-radius: 8px; object-fit: cover; display: none; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        </div>
+
                         <!-- Sección con detalles adicionales -->
                         <div class="row g-3">
                             <div class="col-md-6">

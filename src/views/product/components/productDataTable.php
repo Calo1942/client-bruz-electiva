@@ -13,6 +13,7 @@
                 <!-- Encabezados de la tabla -->
                 <th>ID</th>
                 <th>Nombre</th>
+                <th>Imagen</th>
                 <th>Categoría</th>
                 <th>Precio al Detal</th>
                 <th>Precio al Mayor</th>

@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <!-- Formulario para editar un producto existente -->
-            <form id="formEditarProducto" action="" method="POST">
+            <form id="formEditarProducto" action="" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editarProductoModalLabel">Editar Producto</h5>
                     <!-- Botón para cerrar el modal -->
@@ -65,6 +65,20 @@
                                     <input type="number" class="form-control rounded-0" id="editarMayorProducto" name="precio_mayor" step="0.01" min="0" placeholder="Precio Mayor">
                                     <label for="editarMayorProducto">Precio al por mayor (opcional)</label>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo para imagen del producto -->
+                        <div class="col-12">
+                            <label for="editarImagenProducto" class="form-label">Imagen del Producto</label>
+                            <input type="file" class="form-control" id="editarImagenProducto" name="imagen" accept="image/jpeg,image/png,image/gif,image/webp">
+                            <div class="form-text">Deje vacío para mantener la imagen actual. Formatos aceptados: JPEG, PNG, GIF, WebP. Tamaño máximo: 5MB</div>
+                            <div class="mt-2">
+                                <div id="imagenActualProducto" style="margin-top: 10px;">
+                                    <p class="text-muted small">Imagen actual:</p>
+                                    <img id="previewImagenActual" src="" alt="Imagen actual" style="max-width: 200px; max-height: 200px; border-radius: 8px; display: none;">
+                                </div>
+                                <img id="previewNuevaImagenProducto" src="" alt="Vista previa nueva imagen" style="max-width: 200px; max-height: 200px; display: none; border-radius: 8px; margin-top: 10px;">
                             </div>
                         </div>
                     </div>

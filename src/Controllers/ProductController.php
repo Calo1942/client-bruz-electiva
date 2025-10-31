@@ -7,7 +7,7 @@ use BruzDeporte\Models\CategoryModel;
 
 $module_config = [
     'primary_key' => 'id_producto',
-    'fields' => ['nombre', 'descripcion', 'stock', 'precio_detal', 'precio_mayor', 'id_categoria', 'imagen'],
+    'fields' => ['nombre', 'descripcion', 'stock', 'precio_detal', 'precio_mayor', 'id_categoria'], // 'imagen' se maneja desde $_FILES en el modelo
     'view_path' => 'product/product.php'
 ];
 
@@ -93,7 +93,7 @@ if ($action) {
 $categoryModel = new CategoryModel();
 $categoriesResult = $categoryModel->findAll();
 $categories = [];
-if ($categoriesResult && $categoriesResult['status'] === 'success') {
+if ($categoriesResult && $categoriesResult['success']) {
     $categories = $categoriesResult['data'] ?? [];
 }
 

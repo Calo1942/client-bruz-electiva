@@ -39,6 +39,7 @@
         
         <script type="module" src="src/assets/js/category/categoryValidation.js"></script>
         
+       
         <script src="src/assets/js/category/categoryDataTable.js"></script>
 
         <!-- Modales -->

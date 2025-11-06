@@ -70,11 +70,21 @@ $(document).ready(async function() {
                     
                     $('#verCategoriaModal').modal('show');
                 } else {
-                    alert('Error al cargar los datos de la categoría');
+                    //alert('Error al cargar los datos de la categoría');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error al cargar los datos de la categoría',
+                        icon: 'error'
+                    })
                 }
             },
             error: function() {
-                alert('Error de conexión');
+                //alert('Error de conexión');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error de conexión',
+                    icon: 'error'
+                })
             }
         });
     });
@@ -94,15 +104,30 @@ $(document).ready(async function() {
             data: formData,
             success: function(response) {
                 if (response.success) {
-                    alert('Categoría agregada correctamente');
+                    //alert('Categoría agregada correctamente');
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'Categoría agregada correctamente',
+                        icon: 'success'
+                    })
                     $('#agregarCategoriaModal').modal('hide');
                     tblCategory.ajax.reload();
                 } else {
-                    alert('Error al agregar la categoría: ' + response.message);
+                    //alert('Error al agregar la categoría: ' + response.message);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error al agregar la categoría: ' + response.message,
+                        icon: 'error',
+                    })
                 }
             },
             error: function() {
-                alert('Error de conexión');
+                Swal.fire({
+                        title: 'Error!',
+                        text: 'Error de conexión',
+                        icon: 'error'
+                })
+                //alert('Error de conexión');
             }
         });
     });
@@ -127,11 +152,21 @@ $(document).ready(async function() {
                     
                     $('#editarCategoriaModal').modal('show');
                 } else {
-                    alert('Error al cargar los datos de la categoría');
+                    //alert('Error al cargar los datos de la categoría');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error al cargar los datos de la categoría',
+                        icon: 'error'
+                    })
                 }
             },
             error: function() {
-                alert('Error de conexión');
+                //alert('Error de conexión');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error de conexión',
+                    icon: 'error'
+                })
             }
         });
     });
@@ -152,23 +187,46 @@ $(document).ready(async function() {
             data: formData,
             success: function(response) {
                 if (response.success) {
-                    alert('Categoría actualizada correctamente');
+                    //alert('Categoría actualizada correctamente');
+                    Swal.fire({
+                        title: 'Éxito!',
+                        text: 'Categoría actualizada correctamente',
+                        icon: 'success'
+                    })
                     $('#editarCategoriaModal').modal('hide');
                     tblCategory.ajax.reload();
                 } else {
-                    alert('Error al actualizar la categoría: ' + response.message);
+                    //alert('Error al actualizar la categoría: ' + response.message);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error al actualizar la categoría: ' + response.message,
+                        icon: 'error'
+                    })
                 }
             },
             error: function() {
-                alert('Error de conexión');
+                //alert('Error de conexión');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Error de conexión',
+                    icon: 'error'
+                })
             }
         });
     });
     
     $(document).on('click', '.btn-eliminar', async function() {
         const id = this.value;
-        
-        if (confirm('¿Está seguro de eliminar esta categoría?')) {
+
+        Swal.fire({
+            title: "Estás seguro?",
+            text: "¿Está seguro de eliminar esta categoría?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, Bórralo"
+        }).then((result) => {
             $.ajax({
                 url: '',
                 method: 'POST',
@@ -178,17 +236,33 @@ $(document).ready(async function() {
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert('Categoría eliminada correctamente');
+                        //alert('Categoría eliminada correctamente');
+                        Swal.fire({
+                            title: 'Éxito!',
+                            text: 'Categoría eliminada correctamente',
+                            icon: 'success'
+                        })
                         tblCategory.ajax.reload();
                     } else {
-                        alert('Error al eliminar la categoría: ' + response.message);
+                        //alert('Error al eliminar la categoría: ' + response.message);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Error al eliminar la categoría: ' + response.message,
+                            icon: 'error'
+                        })
                     }
                 },
                 error: function() {
-                    alert('Error de conexión');
+                    //alert('Error de conexión');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Error de conexión',
+                        icon: 'error'
+                    })
                 }
             });
-        }
+        });
+
     });
 
    

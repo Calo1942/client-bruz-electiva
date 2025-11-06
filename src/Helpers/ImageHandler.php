@@ -39,13 +39,20 @@ trait ImageHandler
 
             // Crear directorio si no existe
             if (!is_dir($this->imageUploadDir)) {
-                mkdir($this->imageUploadDir, 0755, true);
+                if (!mkdir($this->imageUploadDir, 0755, true)) {
+                    throw new Exception("No se pudo crear el directorio: " . $this->imageUploadDir);
+                }
             }
 
             // Generar nombre único
             $extension = $this->getExtensionFromMime($mimeType);
             $filename = uniqid() . '_' . $this->sanitizeFileName($file['name']) . $extension;
             $filePath = $this->imageUploadDir . $filename;
+
+            // Confirmar permisos de escritura
+            if (!is_writable($this->imageUploadDir)) {
+                throw new Exception("El directorio no tiene permisos de escritura: " . $this->imageUploadDir);
+            }
 
             // Mover archivo
             if (!move_uploaded_file($file['tmp_name'], $filePath)) {

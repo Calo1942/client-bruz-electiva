@@ -9,24 +9,20 @@ use BruzDeporte\Helpers\Validations;
 use BruzDeporte\Helpers\ApiResponse;
 use BruzDeporte\Helpers\ImageHandler;
 
-class ProductModel extends DBConnect implements Crud
+class CustomModel extends DBConnect implements Crud
 {
     use Validations, ApiResponse, ImageHandler;
     
-    protected $table = 'producto';
-    protected $idField = 'id_producto';
+    protected $table = 'prod_personalizacion';
+    protected $idField = 'id_personalizacion';
     protected $fields = [
-        'nombre' => 'validate_text_long',
         'descripcion' => 'validate_description',
-        //'stock' => 'validate_stock',
-        'precio_detal' => 'validate_precio',
-        'precio_mayor' => 'validate_precio',
         'id_categoria' => 'validate_id',
         'imagen' => 'validate_nombre_archivo',
     ];
     protected $module_name = [
-        'singular' => 'Producto',
-        'plural' => 'Productos'
+        'singular' => 'Personalizado',
+        'plural' => 'Personalizados'
     ];
 
     public function store($data)

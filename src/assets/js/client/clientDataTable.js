@@ -6,7 +6,7 @@
 import { createDataTable, reloadDataTable, clearFormValidation, clearFormFields, createActionsColumn } from '../helpers/dataTable.js';
 import { getById, create, update, remove, executeAjax } from '../helpers/ajax.js';
 import { showConfirm, showLoading, closeLoading } from '../helpers/sweetalert.js';
-import { initAllAnimations, animateIn } from '../helpers/animations.js';
+import { initAllAnimations, animateIn, fixModalAriaHidden } from '../helpers/animations.js';
 import { showTableSkeleton, hideTableSkeleton } from '../helpers/skeleton.js';
 
 // URL del endpoint (se puede configurar desde la vista si es necesario)
@@ -15,6 +15,8 @@ const API_URL = window.clientApiUrl || '';
 $(document).ready(async function() {
     // Inicializar animaciones del sistema
     initAllAnimations();
+    // Corregir problema de aria-hidden en modales
+    fixModalAriaHidden();
     
     // Mostrar skeleton mientras carga la tabla
     showTableSkeleton('#clientTable', 5, 6);

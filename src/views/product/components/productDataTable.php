@@ -15,8 +15,10 @@
                 <th>Nombre</th>
                 <th>Imagen</th>
                 <th>Categoría</th>
+                <th>Stock</th>
                 <th>Precio al Detal</th>
                 <th>Precio al Mayor</th>
+                <th>Descripción</th>
                 <th>Acciones</th>
             </tr>
         </thead>

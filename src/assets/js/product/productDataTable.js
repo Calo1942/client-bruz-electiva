@@ -3,10 +3,10 @@
  * Utiliza módulos modulares para operaciones CRUD y alertas
  */
 
-import { createDataTable, reloadDataTable, clearFormValidation, clearFormFields } from '../helpers/dataTable.js';
+import { createDataTable, reloadDataTable, clearFormValidation, clearFormFields, createActionsColumn } from '../helpers/dataTable.js';
 import { getAll, getById, create, update, remove, executeAjax } from '../helpers/ajax.js';
 import { showConfirm, showLoading, closeLoading } from '../helpers/sweetalert.js';
-import { initAllAnimations, animateIn } from '../helpers/animations.js';
+import { initAllAnimations, animateIn, fixModalAriaHidden } from '../helpers/animations.js';
 import { showTableSkeleton, hideTableSkeleton, withSkeleton } from '../helpers/skeleton.js';
 import { setupImagePreview, showExistingImage, clearPreview } from '../helpers/imagePreview.js';
 
@@ -16,9 +16,11 @@ const API_URL = window.productApiUrl || '';
 $(document).ready(async function() {
     // Inicializar animaciones del sistema
     initAllAnimations();
+    // Corregir problema de aria-hidden en modales
+    fixModalAriaHidden();
     
     // Mostrar skeleton mientras carga la tabla
-    const $skeleton = showTableSkeleton('#productTable', 5, 7);
+    const $skeleton = showTableSkeleton('#productTable', 5, 8);
     
     // Inicializar DataTable
     const tblProduct = createDataTable('#productTable', API_URL, [
@@ -34,9 +36,15 @@ $(document).ready(async function() {
             }
         },
         {
-            data: 'id_categoria',
+            data: 'categoria_nombre',
             render: function(data) {
                 return data || 'Sin categoría';
+            }
+        },
+        {
+            data: 'stock',
+            render: function(data) {
+                return data || 0;
             }
         },
         {
@@ -49,6 +57,12 @@ $(document).ready(async function() {
             data: 'precio_mayor',
             render: function(data) {
                 return data ? '$' + parseFloat(data).toFixed(2) : 'N/A';
+            }
+        },
+        {
+            data: 'descripcion',
+            render: function(data) {
+                return data || 'Sin descripción';
             }
         },
         createActionsColumn(null, {
@@ -66,24 +80,33 @@ $(document).ready(async function() {
         }
     });
 
-    // Configurar previsualización de imágenes con opciones mejoradas
-    setupImagePreview('#imagenProducto', '#previewImagenProducto', {
-        maxSize: 5 * 1024 * 1024,
-        allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
-        previewWidth: 200,
-        previewHeight: 200,
-        showRemoveButton: true,
-        animate: true
-    });
-    
-    setupImagePreview('#editarImagenProducto', '#previewNuevaImagenProducto', {
-        maxSize: 5 * 1024 * 1024,
-        allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
-        previewWidth: 200,
-        previewHeight: 200,
-        showRemoveButton: true,
-        animate: true
-    });
+    // Configurar previsualización de imágenes
+    // Esperar a que el DOM esté completamente cargado
+    setTimeout(function() {
+        // Configurar preview para modal de crear
+        if ($('#imagenProducto').length) {
+            setupImagePreview('#imagenProducto', '#previewImagenProducto', {
+                maxSize: 5 * 1024 * 1024,
+                allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+                previewWidth: 200,
+                previewHeight: 200,
+                showRemoveButton: true,
+                animate: true
+            });
+        }
+        
+        // Configurar preview para modal de editar
+        if ($('#editarImagenProducto').length) {
+            setupImagePreview('#editarImagenProducto', '#previewNuevaImagenProducto', {
+                maxSize: 5 * 1024 * 1024,
+                allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+                previewWidth: 200,
+                previewHeight: 200,
+                showRemoveButton: true,
+                animate: true
+            });
+        }
+    }, 100);
 
     // Abrir modal de agregar
     $(document).on('click', '.btn-agregar', async function() {
@@ -91,6 +114,7 @@ $(document).ready(async function() {
             'nombreProducto',
             'categoriaProducto',
             'descripcionProducto',
+            'stockProducto',
             'detalProducto',
             'mayorProducto',
             'imagenProducto'
@@ -113,6 +137,7 @@ $(document).ready(async function() {
                 closeLoading();
                 $('#verNombreProducto').text(response.data.nombre || '');
                 $('#verCategoriaProducto').text(response.data.id_categoria || 'Sin categoría');
+                $('#verStockProducto').text(response.data.stock || 0);
                 $('#verDescripcionProducto').text(response.data.descripcion || 'Sin descripción');
                 $('#verPrecioDetalProducto').text('$' + parseFloat(response.data.precio_detal || 0).toFixed(2));
                 $('#verPrecioMayorProducto').text(response.data.precio_mayor ? '$' + parseFloat(response.data.precio_mayor).toFixed(2) : 'N/A');
@@ -165,6 +190,7 @@ $(document).ready(async function() {
                 $('#editarProductoId').val(response.data.id_producto);
                 $('#editarNombreProducto').val(response.data.nombre);
                 $('#editarDescripcionProducto').val(response.data.descripcion || '');
+                $('#editarStockProducto').val(response.data.stock || 0);
                 $('#editarDetalProducto').val(response.data.precio_detal);
                 $('#editarMayorProducto').val(response.data.precio_mayor || '');
                 $('#editarCategoriaProducto').val(response.data.id_categoria);

@@ -37,6 +37,11 @@
         <!-- Scripts principales -->
         <?php echo $scripts_links; ?>
         
+        <script>
+            // Definir URL del API para productos (misma página)
+            window.productApiUrl = '';
+        </script>
+        
         <script type="module" src="src/assets/js/product/productValidation.js"></script>
         
         <script type="module" src="src/assets/js/product/productDataTable.js"></script>

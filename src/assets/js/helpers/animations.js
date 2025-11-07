@@ -230,3 +230,80 @@ export function initAllAnimations() {
     initFormAnimations();
 }
 
+/**
+ * Corrige el problema de aria-hidden en modales
+ * Bootstrap agrega aria-hidden al contenedor principal, pero esto causa problemas
+ * si hay elementos con foco dentro del modal
+ */
+export function fixModalAriaHidden() {
+    // Usar MutationObserver para detectar cuando Bootstrap agrega aria-hidden
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'aria-hidden') {
+                const $target = $(mutation.target);
+                
+                // Si se agregó aria-hidden a un contenedor principal
+                if ($target.hasClass('flex-grow-1') && $target.hasClass('d-flex') && $target.hasClass('flex-column')) {
+                    // Verificar si hay un modal visible
+                    const $visibleModal = $('.modal.show, .modal.in');
+                    if ($visibleModal.length > 0) {
+                        // Remover aria-hidden del contenedor principal
+                        $target.removeAttr('aria-hidden');
+                    }
+                }
+                
+                // Si un elemento con foco está dentro de un aria-hidden, removerlo
+                const $focusedElement = $(document.activeElement);
+                if ($focusedElement.length && $focusedElement.closest('[aria-hidden="true"]').length) {
+                    $focusedElement.closest('[aria-hidden="true"]').removeAttr('aria-hidden');
+                }
+            }
+        });
+    });
+    
+    // Observar cambios en el body y contenedores principales
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['aria-hidden'],
+        subtree: true
+    });
+    
+    // También interceptar eventos de Bootstrap
+    $(document).on('show.bs.modal', '.modal', function(e) {
+        // Prevenir que Bootstrap agregue aria-hidden al contenedor principal
+        const $mainContainer = $('.flex-grow-1.d-flex.flex-column');
+        $mainContainer.removeAttr('aria-hidden');
+    });
+    
+    $(document).on('shown.bs.modal', '.modal', function() {
+        // Asegurar que el contenedor principal no tenga aria-hidden
+        const $mainContainer = $('.flex-grow-1.d-flex.flex-column');
+        $mainContainer.removeAttr('aria-hidden');
+        
+        // Verificar que el elemento con foco no esté dentro de un aria-hidden
+        setTimeout(() => {
+            const $focusedElement = $(document.activeElement);
+            if ($focusedElement.length) {
+                const $hiddenParent = $focusedElement.closest('[aria-hidden="true"]');
+                if ($hiddenParent.length && !$hiddenParent.hasClass('modal')) {
+                    $hiddenParent.removeAttr('aria-hidden');
+                }
+            }
+        }, 50);
+    });
+    
+    $(document).on('hide.bs.modal', '.modal', function() {
+        // Cuando se cierra el modal, permitir que Bootstrap maneje aria-hidden normalmente
+        // pero solo si no hay otros modales abiertos
+        setTimeout(() => {
+            const $visibleModals = $('.modal.show, .modal.in');
+            if ($visibleModals.length === 0) {
+                // No hay modales visibles, permitir aria-hidden
+                return;
+            }
+            // Hay otros modales, mantener sin aria-hidden
+            $('.flex-grow-1.d-flex.flex-column').removeAttr('aria-hidden');
+        }, 100);
+    });
+}
+

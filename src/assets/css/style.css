@@ -864,6 +864,25 @@ main {
 
 /* ===== MEJORAS DE ACCESIBILIDAD Y UX ===== */
 
+/* Corrección para aria-hidden en modales */
+.modal-backdrop-active {
+    pointer-events: none;
+    user-select: none;
+}
+
+.modal-backdrop-active * {
+    pointer-events: none;
+}
+
+/* Asegurar que los modales siempre sean accesibles */
+.modal {
+    pointer-events: auto;
+}
+
+.modal * {
+    pointer-events: auto;
+}
+
 /* Focus visible mejorado */
 *:focus-visible {
     outline: 2px solid var(--primary-500);

@@ -49,6 +49,15 @@
                                 </div>
                             </div>
                             
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <p class="mb-1 text-muted fw-bold">Stock:</p>
+                                        <h4 class="fw-bold text-dark" id="verStockProducto"></h4>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="col-12">
                                 <div class="card border-0 bg-light">
                                     <div class="card-body">

@@ -117,6 +117,11 @@ export function createDataTable(tableId, url, columns, customConfig = {}) {
         ...customConfig
     };
 
+    // Si la URL está vacía, usar la URL actual
+    if (!url || url === '') {
+        config.ajax.url = window.location.href;
+    }
+
     return $(tableId).DataTable(config);
 }
 

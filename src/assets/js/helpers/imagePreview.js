@@ -29,18 +29,22 @@ export function setupImagePreview(inputSelector, previewSelector, options = {}) 
     const config = { ...defaultConfig, ...options };
     
     // Asegurar que el preview tenga estilos básicos
+    // No establecer display: none aquí, dejarlo como está en el HTML
     $preview.css({
         'max-width': config.previewWidth + 'px',
         'max-height': config.previewHeight + 'px',
         'border-radius': '8px',
         'object-fit': 'cover',
-        'display': 'none',
         'margin-top': '10px',
         'box-shadow': '0 2px 8px rgba(0,0,0,0.1)',
         'transition': 'all 0.3s ease'
     });
     
-    $input.on('change', function(e) {
+    // Asegurar que el preview esté oculto inicialmente
+    $preview.hide();
+    
+    // Usar delegación de eventos para asegurar que funcione
+    $input.off('change.imagePreview').on('change.imagePreview', function(e) {
         const file = e.target.files[0];
         
         if (file) {
@@ -59,12 +63,19 @@ export function setupImagePreview(inputSelector, previewSelector, options = {}) 
             // Leer y mostrar preview
             const reader = new FileReader();
             
-            reader.onload = function(e) {
+            reader.onload = function(event) {
+                // Asegurar que el preview esté visible
+                const imageUrl = event.target.result;
+                $preview.attr('src', imageUrl);
+                
+                // Forzar mostrar el preview
                 if (config.animate) {
                     $preview.css({
                         opacity: 0,
-                        transform: 'scale(0.8)'
-                    }).attr('src', e.target.result).show().animate({
+                        transform: 'scale(0.8)',
+                        display: 'block',
+                        visibility: 'visible'
+                    }).animate({
                         opacity: 1
                     }, {
                         duration: 300,
@@ -73,11 +84,18 @@ export function setupImagePreview(inputSelector, previewSelector, options = {}) 
                             $(this).css('transform', `scale(${scale})`);
                         },
                         complete: function() {
-                            $(this).css('transform', 'scale(1)');
+                            $(this).css({
+                                'transform': 'scale(1)',
+                                'display': 'block',
+                                'visibility': 'visible'
+                            });
                         }
                     });
                 } else {
-                    $preview.attr('src', e.target.result).fadeIn(300);
+                    $preview.css({
+                        'display': 'block',
+                        'visibility': 'visible'
+                    }).fadeIn(300);
                 }
                 
                 // Agregar botón de eliminar si está habilitado
@@ -110,12 +128,14 @@ export function showExistingImage(previewSelector, imageUrl, animate = true) {
     const $preview = typeof previewSelector === 'string' ? $(previewSelector) : previewSelector;
     
     if (imageUrl) {
+        $preview.attr('src', imageUrl);
         if (animate) {
             $preview.css({
-                opacity: 0
-            }).attr('src', imageUrl).fadeIn(300);
+                opacity: 0,
+                display: 'block'
+            }).fadeIn(300);
         } else {
-            $preview.attr('src', imageUrl).show();
+            $preview.css('display', 'block').show();
         }
     } else {
         $preview.hide();

@@ -72,7 +72,18 @@ class ProductModel extends DBConnect implements Crud
     public function findAll()
     {
         try {
-            $stmt = $this->con->query("SELECT * FROM {$this->table}");
+            $sql = "SELECT 
+            p.id_producto,
+            p.nombre,
+            p.imagen,
+            p.descripcion,
+            p.stock,
+            p.precio_detal,
+            p.precio_mayor,
+            c.nombre AS categoria_nombre
+            FROM producto p JOIN categoria c ON p.id_categoria = c.id_categoria;";
+
+            $stmt = $this->con->query($sql);
             $result = $stmt->fetchAll();
             return self::success(200, "{$this->module_name['plural']} obtenidos", $result);
         } catch (\Exception $e) {
@@ -83,7 +94,20 @@ class ProductModel extends DBConnect implements Crud
     public function find($id)
     {
         try {
-            $stmt = $this->con->prepare("SELECT * FROM {$this->table} WHERE {$this->idField} = ?");
+            $sql = "SELECT 
+                p.id_producto,
+                p.nombre,
+                p.imagen,
+                p.descripcion,
+                p.stock,
+                p.precio_detal,
+                p.precio_mayor,
+                c.nombre AS id_categoria
+            FROM producto p 
+            JOIN categoria c ON p.id_categoria = c.id_categoria
+            WHERE p.id_producto = ?";
+            
+            $stmt = $this->con->prepare($sql);
             $stmt->execute([$id]);
             $result = $stmt->fetch();
             return self::success(200, "{$this->module_name['singular']} obtenido", $result);

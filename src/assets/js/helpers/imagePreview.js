@@ -77,7 +77,7 @@ export function showExistingImage(previewSelector, imageUrl, animate = true) {
 
     if (imageUrl) {
         $preview.attr('src', imageUrl);
-        animate ? $preview.css({ opacity: 0, display: 'block' }).fadeIn(300) : $preview.show();
+        animate ? $preview.css({ opacity: 1, display: 'block' }).fadeIn(300) : $preview.show();
     } else {
         $preview.hide();
     }

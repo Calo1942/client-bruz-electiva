@@ -143,7 +143,6 @@ $(document).ready(async function() {
                 $('#verPrecioMayorProducto').text(response.data.precio_mayor ? '$' + parseFloat(response.data.precio_mayor).toFixed(2) : 'N/A');
                 
                 showExistingImage('#verImagenProducto', response.data.imagen, true);
-                //console.log(response.data.imagen);
                 $('#verProductoModal').modal('show');
             }
         );

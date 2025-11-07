@@ -520,4 +520,369 @@ main {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* ===== ANIMACIONES ===== */
+
+/* Animación de shake (temblor) para errores */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+    20%, 40%, 60%, 80% { transform: translateX(10px); }
+}
+
+/* Animación de pulse (pulso) */
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Animación de fade in */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Animación de slide up */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación para campos de formulario enfocados */
+.field-focused {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+.field-focused .form-control,
+.field-focused .form-select {
+    box-shadow: 0 4px 8px rgba(165, 40, 40, 0.15);
+}
+
+/* Transiciones suaves para elementos de entrada */
+.form-control,
+.form-select,
+.btn {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(165, 40, 40, 0.2);
+}
+
+/* ===== SKELETON LOADERS ===== */
+
+.skeleton-loader {
+    background: var(--secondary-100);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+/* Animación base para skeleton */
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: calc(200px + 100%) 0;
+    }
+}
+
+.skeleton-base {
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+/* Skeleton para tablas */
+.skeleton-table {
+    width: 100%;
+}
+
+.skeleton-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.skeleton-header-cell {
+    flex: 1;
+    height: 50px;
+    background-color: var(--primary-500);
+    border-radius: 8px;
+    opacity: 0.8;
+}
+
+.skeleton-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.skeleton-cell {
+    flex: 1;
+    height: 40px;
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+/* Skeleton para formularios */
+.skeleton-form {
+    padding: 20px;
+}
+
+.skeleton-form-field {
+    margin-bottom: 20px;
+}
+
+.skeleton-label {
+    width: 30%;
+    height: 16px;
+    margin-bottom: 8px;
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+.skeleton-input {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+/* Skeleton para cards */
+.skeleton-card {
+    border: 1px solid var(--secondary-200);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.skeleton-image {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+}
+
+.skeleton-content {
+    padding: 20px;
+}
+
+.skeleton-title {
+    width: 70%;
+    height: 24px;
+    margin-bottom: 12px;
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+.skeleton-text {
+    width: 100%;
+    height: 16px;
+    margin-bottom: 8px;
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    border-radius: 4px;
+}
+
+.skeleton-text.short {
+    width: 60%;
+}
+
+/* Skeleton para listas */
+.skeleton-list {
+    padding: 10px;
+}
+
+.skeleton-list-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.skeleton-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(
+        90deg,
+        var(--secondary-200) 0px,
+        var(--secondary-300) 40px,
+        var(--secondary-200) 80px
+    );
+    background-size: 200px 100%;
+    animation: skeleton-loading 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.skeleton-list-content {
+    flex: 1;
+}
+
+/* ===== SWEETALERT CUSTOM STYLES ===== */
+
+.sweet-alert-custom {
+    border-radius: 12px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.sweet-alert-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: var(--secondary-900);
+}
+
+.sweet-alert-content {
+    font-family: 'Roboto', sans-serif;
+    color: var(--secondary-700);
+}
+
+.sweet-alert-confirm {
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.sweet-alert-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sweet-alert-cancel {
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.sweet-alert-cancel:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== MEJORAS DE PREVIEW DE IMÁGENES ===== */
+
+.image-preview-container {
+    position: relative;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.image-preview-container img {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-preview-container img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+    transition: transform 0.2s ease;
+}
+
+.btn-remove-image:hover {
+    transform: scale(1.1);
+}
+
+/* ===== ANIMACIONES DE ENTRADA PARA MODALES ===== */
+
+.modal-content {
+    transition: all 0.3s ease;
+}
+
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: translate(0, -50px);
+}
+
+.modal.show .modal-dialog {
+    transform: translate(0, 0);
+}
+
+/* ===== MEJORAS DE ACCESIBILIDAD Y UX ===== */
+
+/* Focus visible mejorado */
+*:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+}
+
+/* Transiciones suaves para todos los elementos interactivos */
+a, button, input, select, textarea {
+    transition: all 0.2s ease;
+}
+
+/* Efecto hover mejorado para botones */
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
 /* Puedes añadir otros estilos personalizados aquí */ 

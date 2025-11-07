@@ -40,7 +40,7 @@
         
         <script type="module" src="src/assets/js/client/clientValidation.js"></script>
         
-        <script src="src/assets/js/client/clientDataTable.js"></script>
+        <script type="module" src="src/assets/js/client/clientDataTable.js"></script>
 
         <!-- Modales -->
         <?php require_once 'components/clientEditModal.php'; ?>

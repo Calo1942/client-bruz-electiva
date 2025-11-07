@@ -1,276 +1,156 @@
-$(document).ready(async function() {
-    const tblCategory = $('#categoryTable').DataTable({
-        ajax: {
-            url: '',
-            method: 'POST',
-            data: {
-                getAll: true
-            },
-            dataSrc: 'data'
-        },
-        columns: [
-            {data: 'id_categoria'},    
-            {data: 'nombre'},
-            {data: null, render: (data)=>{
-                const btnVer = `<button value="${data.id_categoria}" type="button" class="btn btn-sm btn-primary me-1 btn-ver" title="Ver categoría">
-                    <i class="bi bi-eye"></i>
-                </button>`;
-                const btnEditar = `<button value="${data.id_categoria}" type="button" class="btn btn-sm btn-secondary me-1 btn-editar" title="Editar categoría">
-                    <i class="bi bi-pencil-square"></i>
-                </button>`;
-                const btnEliminar = `<button value="${data.id_categoria}" type="button" class="btn btn-sm btn-danger btn-eliminar" title="Eliminar categoría">
-                    <i class="bi bi-trash"></i>
-                </button>`;
+/**
+ * Category DataTable - Gestión de categorías con DataTables y AJAX
+ * Utiliza módulos modulares para operaciones CRUD y alertas
+ */
 
-                return `${btnVer} ${btnEditar} ${btnEliminar}`;
-            }}
-        ],
-        autoWidth: false,
-        "columnDefs": [
-            {targets: [0, 1], className: 'tabla'},
-            { orderable: false, className: 'acciones', targets: [2] }
-        ],
-        "language":{
-            url: "https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json",
-            search: "", 
-            searchPlaceholder: "Buscar..." 
-        },
-        "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-               '<"row"<"col-sm-12"tr>>' +
-               '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-        "initComplete": function() {
-            
+import { createDataTable, reloadDataTable, clearFormValidation, clearFormFields, createActionsColumn } from '../helpers/dataTable.js';
+import { getById, create, update, remove, executeAjax } from '../helpers/ajax.js';
+import { showConfirm, showLoading, closeLoading } from '../helpers/sweetalert.js';
+import { initAllAnimations, animateIn } from '../helpers/animations.js';
+import { showTableSkeleton, hideTableSkeleton } from '../helpers/skeleton.js';
+
+// URL del endpoint (se puede configurar desde la vista si es necesario)
+const API_URL = window.categoryApiUrl || '';
+
+$(document).ready(async function() {
+    // Inicializar animaciones del sistema
+    initAllAnimations();
+    
+    // Mostrar skeleton mientras carga la tabla
+    showTableSkeleton('#categoryTable', 5, 3);
+    
+    // Inicializar DataTable
+    const tblCategory = createDataTable('#categoryTable', API_URL, [
+        { data: 'id_categoria' },
+        { data: 'nombre' },
+        createActionsColumn(null, {
+            idField: 'id_categoria',
+            verTitle: 'Ver categoría',
+            editarTitle: 'Editar categoría',
+            eliminarTitle: 'Eliminar categoría'
+        })
+    ], {
+        initComplete: function() {
             $('.dataTables_filter input').attr('placeholder', 'Buscar...');
+            // Ocultar skeleton y mostrar tabla con animación
+            hideTableSkeleton('#categoryTable');
+            animateIn('#categoryTable', 400, 100);
         }
     });
 
+    // Abrir modal de agregar
     $(document).on('click', '.btn-agregar', async function() {
-        
-        $('#nombreCategoria').val('');
-       
-        $('#formAgregarCategoria .is-valid, #formAgregarCategoria .is-invalid').removeClass('is-valid is-invalid');
-        
+        clearFormFields('#formAgregarCategoria', ['nombreCategoria']);
+        clearFormValidation('#formAgregarCategoria');
         $('#agregarCategoriaModal').modal('show');
-    }); 
+    });
 
+    // Ver categoría
     $(document).on('click', '.btn-ver', async function() {
         const id = this.value;
         
-        $.ajax({
-            url: '',
-            method: 'POST',
-            dataType: 'JSON',
-            data: {
-                show: id
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('#verCategoriaId').text(response.data.id_categoria);
-                    $('#verNombreCategoria').text(response.data.nombre);
-                    
-                    $('#verCategoriaModal').modal('show');
-                } else {
-                    //alert('Error al cargar los datos de la categoría');
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Error al cargar los datos de la categoría',
-                        icon: 'error'
-                    })
-                }
-            },
-            error: function() {
-                //alert('Error de conexión');
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error de conexión',
-                    icon: 'error'
-                })
+        const success = await executeAjax(
+            getById(API_URL, id),
+            null,
+            function(response) {
+                $('#verCategoriaId').text(response.data.id_categoria);
+                $('#verNombreCategoria').text(response.data.nombre);
+                $('#verCategoriaModal').modal('show');
             }
-        });
+        );
     });
 
+    // Crear categoría
     $(document).on('submit', '#formAgregarCategoria', async function(e) {
         e.preventDefault();
         
+        showLoading('Guardando...', 'Por favor espere mientras se guarda la categoría');
+        
         const formData = {
-            nombre: $('#nombreCategoria').val(),
-            store: true
+            nombre: $('#nombreCategoria').val()
         };
         
-        $.ajax({
-            url: '',
-            method: 'POST',
-            dataType: 'JSON',
-            data: formData,
-            success: function(response) {
-                if (response.success) {
-                    //alert('Categoría agregada correctamente');
-                    Swal.fire({
-                        title: 'Éxito',
-                        text: 'Categoría agregada correctamente',
-                        icon: 'success'
-                    })
-                    $('#agregarCategoriaModal').modal('hide');
-                    tblCategory.ajax.reload();
-                } else {
-                    //alert('Error al agregar la categoría: ' + response.message);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Error al agregar la categoría: ' + response.message,
-                        icon: 'error',
-                    })
-                }
-            },
-            error: function() {
-                Swal.fire({
-                        title: 'Error!',
-                        text: 'Error de conexión',
-                        icon: 'error'
-                })
-                //alert('Error de conexión');
+        const success = await executeAjax(
+            create(API_URL, formData),
+            'Categoría agregada correctamente',
+            function() {
+                closeLoading();
+                $('#agregarCategoriaModal').modal('hide');
+                reloadDataTable(tblCategory);
             }
-        });
+        );
+        
+        if (!success) {
+            closeLoading();
+        }
     });
 
+    // Editar categoría - Abrir modal
     $(document).on('click', '.btn-editar', async function() {
         const id = this.value;
         
-        
-        $.ajax({
-            url: '',
-            method: 'POST',
-            dataType: 'JSON',
-            data: {
-                show: id
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('#editarCategoriaId').val(response.data.id_categoria);
-                    $('#editarNombreCategoria').val(response.data.nombre);
-                    
-                    $('#formEditarCategoria .is-valid, #formEditarCategoria .is-invalid').removeClass('is-valid is-invalid');
-                    
-                    $('#editarCategoriaModal').modal('show');
-                } else {
-                    //alert('Error al cargar los datos de la categoría');
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Error al cargar los datos de la categoría',
-                        icon: 'error'
-                    })
-                }
-            },
-            error: function() {
-                //alert('Error de conexión');
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error de conexión',
-                    icon: 'error'
-                })
+        const success = await executeAjax(
+            getById(API_URL, id),
+            null,
+            function(response) {
+                $('#editarCategoriaId').val(response.data.id_categoria);
+                $('#editarNombreCategoria').val(response.data.nombre);
+                clearFormValidation('#formEditarCategoria');
+                $('#editarCategoriaModal').modal('show');
             }
-        });
+        );
     });
 
+    // Actualizar categoría
     $(document).on('submit', '#formEditarCategoria', async function(e) {
         e.preventDefault();
         
+        showLoading('Actualizando...', 'Por favor espere mientras se actualiza la categoría');
+        
         const formData = {
             id_categoria: $('#editarCategoriaId').val(),
-            nombre: $('#editarNombreCategoria').val(),
-            update: true
+            nombre: $('#editarNombreCategoria').val()
         };
         
-        $.ajax({
-            url: '',
-            method: 'POST',
-            dataType: 'JSON',
-            data: formData,
-            success: function(response) {
-                if (response.success) {
-                    //alert('Categoría actualizada correctamente');
-                    Swal.fire({
-                        title: 'Éxito!',
-                        text: 'Categoría actualizada correctamente',
-                        icon: 'success'
-                    })
-                    $('#editarCategoriaModal').modal('hide');
-                    tblCategory.ajax.reload();
-                } else {
-                    //alert('Error al actualizar la categoría: ' + response.message);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Error al actualizar la categoría: ' + response.message,
-                        icon: 'error'
-                    })
-                }
-            },
-            error: function() {
-                //alert('Error de conexión');
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Error de conexión',
-                    icon: 'error'
-                })
+        const success = await executeAjax(
+            update(API_URL, formData),
+            'Categoría actualizada correctamente',
+            function() {
+                closeLoading();
+                $('#editarCategoriaModal').modal('hide');
+                reloadDataTable(tblCategory);
             }
-        });
+        );
+        
+        if (!success) {
+            closeLoading();
+        }
     });
-    
+
+    // Eliminar categoría
     $(document).on('click', '.btn-eliminar', async function() {
         const id = this.value;
-
-        Swal.fire({
-            title: "Estás seguro?",
-            text: "¿Está seguro de eliminar esta categoría?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Si, Bórralo"
-        }).then((result) => {
-            $.ajax({
-                url: '',
-                method: 'POST',
-                dataType: 'JSON',
-                data: {
-                    delete: id
-                },
-                success: function(response) {
-                    if (response.success) {
-                        //alert('Categoría eliminada correctamente');
-                        Swal.fire({
-                            title: 'Éxito!',
-                            text: 'Categoría eliminada correctamente',
-                            icon: 'success'
-                        })
-                        tblCategory.ajax.reload();
-                    } else {
-                        //alert('Error al eliminar la categoría: ' + response.message);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Error al eliminar la categoría: ' + response.message,
-                            icon: 'error'
-                        })
-                    }
-                },
-                error: function() {
-                    //alert('Error de conexión');
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Error de conexión',
-                        icon: 'error'
-                    })
+        
+        const confirmed = await showConfirm(
+            '¿Estás seguro?',
+            '¿Está seguro de eliminar esta categoría?',
+            'Sí, eliminar',
+            'Cancelar'
+        );
+        
+        if (confirmed) {
+            const success = await executeAjax(
+                remove(API_URL, id),
+                'Categoría eliminada correctamente',
+                function() {
+                    reloadDataTable(tblCategory);
                 }
-            });
-        });
-
+            );
+        }
     });
 
-   
+    // Recargar tabla al cerrar modal
     $('#agregarCategoriaModal').on('hidden.bs.modal', function() {
-        setTimeout(() => {
-            tblCategory.ajax.reload();
-        }, 500);
+        reloadDataTable(tblCategory, 500);
     });
-
 });
-

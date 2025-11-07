@@ -39,7 +39,7 @@
         
         <script type="module" src="src/assets/js/product/productValidation.js"></script>
         
-        <script src="src/assets/js/product/productDataTable.js"></script>
+        <script type="module" src="src/assets/js/product/productDataTable.js"></script>
 
         <!-- Modales -->
         <?php require_once 'components/productCreateModal.php'; ?>

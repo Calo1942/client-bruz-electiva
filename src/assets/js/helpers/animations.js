@@ -164,7 +164,7 @@ export function initModalAnimations() {
         $modal.find('.modal-content').animate({
             opacity: 1
         }, {
-            duration: 300,
+            duration: 100,
             step: function(now) {
                 const progress = now;
                 const scale = 0.8 + (0.2 * progress);
@@ -199,35 +199,10 @@ export function initModalAnimations() {
 }
 
 /**
- * Inicializa animaciones para elementos de formulario
- */
-export function initFormAnimations() {
-    // Animación al enfocar campos de formulario
-    $(document).on('focus', '.form-control, .form-select', function() {
-        const $field = $(this);
-        $field.parent().addClass('field-focused');
-    });
-
-    $(document).on('blur', '.form-control, .form-select', function() {
-        const $field = $(this);
-        $field.parent().removeClass('field-focused');
-    });
-
-    // Animación para campos con validación
-    $(document).on('input', '.form-control, .form-select', function() {
-        const $field = $(this);
-        if ($field.hasClass('is-valid') || $field.hasClass('is-invalid')) {
-            pulse($field, 1);
-        }
-    });
-}
-
-/**
  * Inicializa todas las animaciones del sistema
  */
 export function initAllAnimations() {
     initModalAnimations();
-    initFormAnimations();
 }
 
 /**

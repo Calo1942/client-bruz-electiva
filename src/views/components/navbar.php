@@ -4,7 +4,7 @@
     <a class="navbar-brand" href="#">
       <img src="src/assets/img/logo.jpeg" alt="Logo BruzTextil" style="height: 53px;">
     </a>
-    <!-- Formulario de búsqueda -->
+    <!-- Formulario de búsqueda 
     <form class="d-flex">
       <input 
         class="form-control me-2" 
@@ -14,6 +14,7 @@
       >
       <button class="btn btn-guardar" type="submit">Buscar</button>
     </form>
+    -->
   </div>
 </nav>
 

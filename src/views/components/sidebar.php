@@ -14,13 +14,14 @@ $isInventory = ($currentUrl == 'product' || $currentUrl == 'category' || $curren
     <hr>
     <!-- Menú principal de navegación -->
     <ul class="nav nav-pills flex-column mb-auto">
+        <!-- 
         <li class="nav-item">
-            <!-- Link a Dashboard, agrega clase 'active' si es la página actual -->
             <a href="?url=client" class="nav-link text-white " aria-current="page">
-                <i class="bi bi-house me-2"></i> <!-- Icono de casa para Dashboard -->
+                <i class="bi bi-house me-2"></i> 
                 Inicio
             </a>
         </li>
+        -->
         
         <li>
             <a href="?url=category" class="nav-link text-white <?php if($currentUrl == 'category') echo 'active'; ?>">

@@ -854,7 +854,7 @@ main {
 }
 
 .modal.fade .modal-dialog {
-    transition: transform 0.3s ease-out;
+    transition: transform 0.0s ease-out;
     transform: translate(0, -50px);
 }
 

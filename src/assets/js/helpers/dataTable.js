@@ -1,11 +1,4 @@
-/**
- * Módulo DataTable - Configuración base para DataTables con AJAX
- * Proporciona funciones para crear y configurar DataTables de forma consistente
- */
 
-/**
- * Configuración por defecto para DataTables
- */
 const defaultConfig = {
     autoWidth: false,
     language: {
@@ -21,12 +14,7 @@ const defaultConfig = {
     }
 };
 
-/**
- * Crea una configuración de columna de acciones estándar
- * @param {function} renderFunction - Función personalizada para renderizar los botones
- * @param {object} options - Opciones adicionales (btnVer, btnEditar, btnEliminar)
- * @returns {object} Configuración de columna
- */
+
 export function createActionsColumn(renderFunction = null, options = {}) {
     const defaultRender = (data, type, row) => {
         // Usar el campo ID especificado o intentar detectarlo automáticamente
@@ -64,14 +52,6 @@ export function createActionsColumn(renderFunction = null, options = {}) {
     };
 }
 
-/**
- * Crea una configuración de DataTable con AJAX
- * @param {string} tableId - ID del elemento table
- * @param {string} url - URL del endpoint para AJAX
- * @param {array} columns - Array de configuraciones de columnas
- * @param {object} customConfig - Configuración personalizada adicional
- * @returns {object} Instancia de DataTable
- */
 export function createDataTable(tableId, url, columns, customConfig = {}) {
     const ajaxConfig = {
         url: url,
@@ -117,7 +97,6 @@ export function createDataTable(tableId, url, columns, customConfig = {}) {
         ...customConfig
     };
 
-    // Si la URL está vacía, usar la URL actual
     if (!url || url === '') {
         config.ajax.url = window.location.href;
     }
@@ -125,11 +104,7 @@ export function createDataTable(tableId, url, columns, customConfig = {}) {
     return $(tableId).DataTable(config);
 }
 
-/**
- * Recarga una DataTable
- * @param {object} dataTable - Instancia de DataTable
- * @param {number} delay - Delay en milisegundos antes de recargar
- */
+
 export function reloadDataTable(dataTable, delay = 0) {
     if (delay > 0) {
         setTimeout(() => {
@@ -140,34 +115,22 @@ export function reloadDataTable(dataTable, delay = 0) {
     }
 }
 
-/**
- * Limpia las clases de validación de un formulario
- * @param {string|jQuery} formSelector - Selector del formulario
- */
+
 export function clearFormValidation(formSelector) {
     const $form = typeof formSelector === 'string' ? $(formSelector) : formSelector;
     $form.find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
 }
 
-/**
- * Limpia los campos de un formulario
- * @param {string|jQuery} formSelector - Selector del formulario
- * @param {array} fields - Array de IDs de campos a limpiar (sin el #)
- */
+
 export function clearFormFields(formSelector, fields = []) {
     const $form = typeof formSelector === 'string' ? $(formSelector) : formSelector;
     fields.forEach(fieldId => {
-        // Si el fieldId ya incluye #, usarlo directamente, si no, agregarlo
         const selector = fieldId.startsWith('#') ? fieldId : `#${fieldId}`;
         $form.find(selector).val('');
     });
 }
 
-/**
- * Previsualiza una imagen desde un input file
- * @param {string|jQuery} inputSelector - Selector del input file
- * @param {string|jQuery} previewSelector - Selector del elemento img para preview
- */
+
 export function setupImagePreview(inputSelector, previewSelector) {
     const $input = typeof inputSelector === 'string' ? $(inputSelector) : inputSelector;
     const $preview = typeof previewSelector === 'string' ? $(previewSelector) : previewSelector;

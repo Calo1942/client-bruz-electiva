@@ -837,15 +837,21 @@ main {
 
 .btn-remove-image {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: 10px;
+    right: 0px;
+    background: none;
+    border: none;
+    color: #a52828; /* tu color primario */
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
     z-index: 10;
-    transition: transform 0.2s ease;
 }
 
 .btn-remove-image:hover {
-    transform: scale(1.1);
+    color: #6b1e1e; /* tono más oscuro al pasar el mouse */
 }
+
 
 /* ===== ANIMACIONES DE ENTRADA PARA MODALES ===== */
 

@@ -1,15 +1,7 @@
-/**
- * Módulo Image Preview - Renderización y preview de imágenes mejorado
- * Proporciona funciones para manejar preview de imágenes con validación y animaciones
- */
-
 import { pulse } from './animations.js';
 
-/**
- * Configuración por defecto para preview de imágenes
- */
 const defaultConfig = {
-    maxSize: 5 * 1024 * 1024, // 5MB
+    maxSize: 5 * 1024 * 1024,
     allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
     previewWidth: 200,
     previewHeight: 200,
@@ -17,253 +9,143 @@ const defaultConfig = {
     animate: true
 };
 
-/**
- * Configura preview de imagen para un input file
- * @param {string|jQuery} inputSelector - Selector del input file
- * @param {string|jQuery} previewSelector - Selector del elemento img para preview
- * @param {object} options - Opciones de configuración
- */
+// CONFIGURACIÓN PRINCIPAL
 export function setupImagePreview(inputSelector, previewSelector, options = {}) {
-    const $input = typeof inputSelector === 'string' ? $(inputSelector) : inputSelector;
-    const $preview = typeof previewSelector === 'string' ? $(previewSelector) : previewSelector;
+    const $input = $(inputSelector);
+    const $preview = $(previewSelector);
     const config = { ...defaultConfig, ...options };
-    
-    // Asegurar que el preview tenga estilos básicos
-    // No establecer display: none aquí, dejarlo como está en el HTML
+
     $preview.css({
-        'max-width': config.previewWidth + 'px',
-        'max-height': config.previewHeight + 'px',
-        'border-radius': '8px',
-        'object-fit': 'cover',
-        'margin-top': '10px',
-        'box-shadow': '0 2px 8px rgba(0,0,0,0.1)',
-        'transition': 'all 0.3s ease'
-    });
-    
-    // Asegurar que el preview esté oculto inicialmente
-    $preview.hide();
-    
-    // Usar delegación de eventos para asegurar que funcione
-    $input.off('change.imagePreview').on('change.imagePreview', function(e) {
+        maxWidth: `${config.previewWidth}px`,
+        maxHeight: `${config.previewHeight}px`,
+        borderRadius: '8px',
+        objectFit: 'cover',
+        marginTop: '10px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+        transition: 'all 0.3s ease'
+    }).hide();
+
+    // Evento de selección de imagen
+    $input.off('change.imagePreview').on('change.imagePreview', (e) => {
         const file = e.target.files[0];
-        
-        if (file) {
-            // Validar tipo de archivo
-            if (!config.allowedTypes.includes(file.type)) {
-                showImageError($input, 'Tipo de archivo no permitido. Use: JPEG, PNG, GIF o WebP');
-                return;
-            }
-            
-            // Validar tamaño
-            if (file.size > config.maxSize) {
-                showImageError($input, `El archivo es demasiado grande. Tamaño máximo: ${(config.maxSize / 1024 / 1024).toFixed(0)}MB`);
-                return;
-            }
-            
-            // Leer y mostrar preview
-            const reader = new FileReader();
-            
-            reader.onload = function(event) {
-                // Asegurar que el preview esté visible
-                const imageUrl = event.target.result;
-                $preview.attr('src', imageUrl);
-                
-                // Forzar mostrar el preview
-                if (config.animate) {
-                    $preview.css({
-                        opacity: 0,
-                        transform: 'scale(0.8)',
-                        display: 'block',
-                        visibility: 'visible'
-                    }).animate({
-                        opacity: 1
-                    }, {
+        if (!file) return clearPreview($preview, $input, config);
+
+        // Validaciones
+        if (!config.allowedTypes.includes(file.type))
+            return showImageError($input, 'Tipo de archivo no permitido. Use: JPEG, PNG, GIF o WebP');
+
+        if (file.size > config.maxSize)
+            return showImageError($input, `El archivo es demasiado grande. Máximo ${(config.maxSize / 1024 / 1024).toFixed(0)}MB`);
+
+        // Leer archivo
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const imageUrl = event.target.result;
+            $preview.attr('src', imageUrl);
+            clearImageError($input);
+
+            if (config.animate) {
+                // Animación de aparición
+                $preview
+                    .css({ opacity: 0, transform: 'scale(0.85)', display: 'block', visibility: 'visible' })
+                    .animate({ opacity: 1 }, {
                         duration: 300,
-                        step: function(now) {
-                            const scale = 0.8 + (0.2 * now);
+                        step(now) {
+                            const scale = 0.85 + (0.15 * now);
                             $(this).css('transform', `scale(${scale})`);
                         },
-                        complete: function() {
-                            $(this).css({
-                                'transform': 'scale(1)',
-                                'display': 'block',
-                                'visibility': 'visible'
-                            });
+                        complete() {
+                            $(this).css({ transform: 'scale(1)' });
                         }
                     });
-                } else {
-                    $preview.css({
-                        'display': 'block',
-                        'visibility': 'visible'
-                    }).fadeIn(300);
-                }
-                
-                // Agregar botón de eliminar si está habilitado
-                if (config.showRemoveButton) {
-                    addRemoveButton($preview, $input, config);
-                }
-                
-                // Limpiar errores previos
-                clearImageError($input);
-            };
-            
-            reader.onerror = function() {
-                showImageError($input, 'Error al leer el archivo');
-            };
-            
-            reader.readAsDataURL(file);
-        } else {
-            clearPreview($preview, $input, config);
-        }
+            } else {
+                $preview.fadeIn(300);
+            }
+
+            // Botón de eliminar
+            if (config.showRemoveButton) addRemoveButton($preview, $input, config);
+        };
+
+        reader.onerror = () => showImageError($input, 'Error al leer el archivo');
+        reader.readAsDataURL(file);
     });
 }
 
-/**
- * Muestra una imagen existente en el preview
- * @param {string|jQuery} previewSelector - Selector del preview
- * @param {string} imageUrl - URL de la imagen
- * @param {boolean} animate - Si debe animarse
- */
+// MOSTRAR IMAGEN EXISTENTE
 export function showExistingImage(previewSelector, imageUrl, animate = true) {
-    const $preview = typeof previewSelector === 'string' ? $(previewSelector) : previewSelector;
-    
+    const $preview = $(previewSelector);
+
     if (imageUrl) {
         $preview.attr('src', imageUrl);
-        if (animate) {
-            $preview.css({
-                opacity: 0,
-                display: 'block'
-            }).fadeIn(300);
-        } else {
-            $preview.css('display', 'block').show();
-        }
+        animate ? $preview.css({ opacity: 0, display: 'block' }).fadeIn(300) : $preview.show();
     } else {
         $preview.hide();
     }
 }
 
-/**
- * Limpia el preview de imagen
- * @param {string|jQuery} previewSelector - Selector del preview
- * @param {string|jQuery} inputSelector - Selector del input
- * @param {object} config - Configuración
- */
-export function clearPreview(previewSelector, inputSelector = null, config = {}) {
-    const $preview = typeof previewSelector === 'string' ? $(previewSelector) : previewSelector;
-    const $input = inputSelector ? (typeof inputSelector === 'string' ? $(inputSelector) : inputSelector) : null;
-    
+// LIMPIAR PREVIEW
+export function clearPreview(previewSelector, inputSelector = null) {
+    const $preview = $(previewSelector);
+    const $input = inputSelector ? $(inputSelector) : null;
+
     $preview.fadeOut(200, function() {
         $(this).attr('src', '').hide();
     });
-    
-    if ($input) {
-        $input.val('');
-    }
-    
-    // Remover botón de eliminar si existe
+
+    if ($input) $input.val('');
     $preview.siblings('.btn-remove-image').remove();
 }
 
-/**
- * Agrega botón para eliminar imagen
- * @param {jQuery} $preview - Elemento preview
- * @param {jQuery} $input - Elemento input
- * @param {object} config - Configuración
- */
-function addRemoveButton($preview, $input, config) {
-    // Remover botón anterior si existe
+
+// AGREGAR BOTÓN DE ELIMINAR
+function addRemoveButton($preview, $input) {
     $preview.siblings('.btn-remove-image').remove();
-    
+
     const $removeBtn = $(`
-        <button type="button" class="btn btn-sm btn-danger btn-remove-image" 
-                style="position: absolute; margin-top: 10px; border-radius: 50%; width: 30px; height: 30px; padding: 0;">
+        <button type="button" class="btn-remove-image" title="Eliminar imagen">
             <i class="bi bi-x"></i>
         </button>
     `);
-    
+
     $preview.parent().css('position', 'relative').append($removeBtn);
-    
-    $removeBtn.on('click', function(e) {
+
+    $removeBtn.on('click', (e) => {
         e.preventDefault();
-        clearPreview($preview, $input, config);
+        clearPreview($preview, $input);
     });
 }
 
-/**
- * Muestra error de imagen
- * @param {string|jQuery} inputSelector - Selector del input
- * @param {string} message - Mensaje de error
- */
-function showImageError(inputSelector, message) {
-    const $input = typeof inputSelector === 'string' ? $(inputSelector) : inputSelector;
-    
-    // Remover error anterior
+//MOSTRAR ERROR
+function showImageError($input, message) {
     clearImageError($input);
-    
-    // Agregar mensaje de error
-    const $error = $(`
+    $input.after(`
         <div class="text-danger small mt-1 image-error-message">
             <i class="bi bi-exclamation-circle"></i> ${message}
         </div>
     `);
-    
-    $input.after($error);
     pulse($input);
     $input.addClass('is-invalid');
 }
 
-/**
- * Limpia error de imagen
- * @param {string|jQuery} inputSelector - Selector del input
- */
-function clearImageError(inputSelector) {
-    const $input = typeof inputSelector === 'string' ? $(inputSelector) : inputSelector;
+// LIMPIAR ERROR
+function clearImageError($input) {
     $input.siblings('.image-error-message').remove();
     $input.removeClass('is-invalid');
 }
 
-/**
- * Valida una imagen antes de subirla
- * @param {File} file - Archivo a validar
- * @param {object} options - Opciones de validación
- * @returns {object} { valid: boolean, error: string }
- */
+// VALIDAR ARCHIVO (sin mostrar mensajes)
 export function validateImage(file, options = {}) {
     const config = { ...defaultConfig, ...options };
-    
-    if (!file) {
-        return { valid: false, error: 'No se seleccionó ningún archivo' };
-    }
-    
-    if (!config.allowedTypes.includes(file.type)) {
-        return { valid: false, error: 'Tipo de archivo no permitido' };
-    }
-    
-    if (file.size > config.maxSize) {
-        return { valid: false, error: `El archivo es demasiado grande. Máximo: ${(config.maxSize / 1024 / 1024).toFixed(0)}MB` };
-    }
-    
+    if (!file) return { valid: false, error: 'No se seleccionó ningún archivo' };
+    if (!config.allowedTypes.includes(file.type)) return { valid: false, error: 'Tipo de archivo no permitido' };
+    if (file.size > config.maxSize) return { valid: false, error: `El archivo es demasiado grande. Máximo ${(config.maxSize / 1024 / 1024).toFixed(0)}MB` };
     return { valid: true, error: null };
 }
 
-/**
- * Crea un preview de imagen con zoom al hacer hover
- * @param {string|jQuery} previewSelector - Selector del preview
- */
+// ZOOM AL PASAR EL MOUSE
 export function enableImageZoom(previewSelector) {
-    const $preview = typeof previewSelector === 'string' ? $(previewSelector) : previewSelector;
-    
-    $preview.css({
-        cursor: 'zoom-in',
-        transition: 'transform 0.3s ease'
-    });
-    
-    $preview.on('mouseenter', function() {
-        $(this).css('transform', 'scale(1.1)');
-    });
-    
-    $preview.on('mouseleave', function() {
-        $(this).css('transform', 'scale(1)');
-    });
+    const $preview = $(previewSelector);
+    $preview.css({ cursor: 'zoom-in', transition: 'transform 0.3s ease' })
+        .on('mouseenter', function() { $(this).css('transform', 'scale(1.1)'); })
+        .on('mouseleave', function() { $(this).css('transform', 'scale(1)'); });
 }
-

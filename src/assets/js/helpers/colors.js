@@ -1,33 +1,16 @@
-/**
- * Módulo de Colores - Estandarización de colores del sistema
- * Proporciona acceso a la paleta de colores CSS definida en el sistema
- */
 
-/**
- * Obtiene el valor de una variable CSS
- * @param {string} variableName - Nombre de la variable CSS (con o sin --)
- * @param {HTMLElement} element - Elemento desde el cual obtener la variable (opcional)
- * @returns {string} Valor de la variable CSS
- */
 export function getCSSVariable(variableName, element = document.documentElement) {
     const name = variableName.startsWith('--') ? variableName : `--${variableName}`;
     return getComputedStyle(element).getPropertyValue(name).trim();
 }
 
-/**
- * Establece el valor de una variable CSS
- * @param {string} variableName - Nombre de la variable CSS (con o sin --)
- * @param {string} value - Valor a establecer
- * @param {HTMLElement} element - Elemento en el cual establecer la variable (opcional)
- */
+
 export function setCSSVariable(variableName, value, element = document.documentElement) {
     const name = variableName.startsWith('--') ? variableName : `--${variableName}`;
     element.style.setProperty(name, value);
 }
 
-/**
- * Paleta de colores del sistema (mapeo de nombres a variables CSS)
- */
+
 export const colorPalette = {
     // Primary (Rojo)
     primary: {
@@ -79,12 +62,7 @@ export const colorPalette = {
     }
 };
 
-/**
- * Obtiene un color de la paleta
- * @param {string} palette - Nombre de la paleta (primary, secondary, green, blue)
- * @param {number} shade - Tono del color (100-900)
- * @returns {string} Valor del color
- */
+
 export function getColor(palette, shade = 500) {
     if (!colorPalette[palette] || !colorPalette[palette][shade]) {
         console.warn(`Color ${palette}-${shade} no encontrado`);
@@ -93,59 +71,31 @@ export function getColor(palette, shade = 500) {
     return getCSSVariable(colorPalette[palette][shade]);
 }
 
-/**
- * Obtiene el color primario del sistema
- * @param {number} shade - Tono del color (default: 500)
- * @returns {string} Valor del color
- */
+
 export function getPrimaryColor(shade = 500) {
     return getColor('primary', shade);
 }
 
-/**
- * Obtiene el color secundario del sistema
- * @param {number} shade - Tono del color (default: 500)
- * @returns {string} Valor del color
- */
+
 export function getSecondaryColor(shade = 500) {
     return getColor('secondary', shade);
 }
 
-/**
- * Obtiene el color de éxito (verde)
- * @param {number} shade - Tono del color (default: 500)
- * @returns {string} Valor del color
- */
+
 export function getSuccessColor(shade = 500) {
     return getColor('green', shade);
 }
 
-/**
- * Obtiene el color de información (azul)
- * @param {number} shade - Tono del color (default: 500)
- * @returns {string} Valor del color
- */
 export function getInfoColor(shade = 500) {
     return getColor('blue', shade);
 }
 
-/**
- * Aplica un color a un elemento usando variables CSS
- * @param {string|jQuery} selector - Selector del elemento
- * @param {string} property - Propiedad CSS (background-color, color, border-color, etc.)
- * @param {string} palette - Nombre de la paleta
- * @param {number} shade - Tono del color
- */
 export function applyColor(selector, property, palette, shade = 500) {
     const $element = typeof selector === 'string' ? $(selector) : selector;
     const color = getColor(palette, shade);
     $element.css(property, color);
 }
 
-/**
- * Obtiene colores para uso en JavaScript (valores directos, no variables CSS)
- * Útil para librerías que no soportan variables CSS
- */
 export const colors = {
     primary: {
         100: '#db7f7f',

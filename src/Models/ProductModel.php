@@ -18,7 +18,7 @@ class ProductModel extends DBConnect implements Crud
     protected $fields = [
         'nombre' => 'validate_text_long',
         'descripcion' => 'validate_description',
-        //'stock' => 'validate_stock',
+        'stock' => 'validate_stock',
         'precio_detal' => 'validate_precio',
         'precio_mayor' => 'validate_precio',
         'id_categoria' => 'validate_id',

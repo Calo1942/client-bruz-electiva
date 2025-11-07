@@ -1,8 +1,8 @@
-<div class="d-flex align-items-center mb-3">
+<div class="d-flex align-items-center justify-content-between mb-3">
     <!-- Título y botón para abrir modal de agregar producto -->
     <h2 class="me-2 mb-0 titulo">Productos</h2>
     <button class="btn btn-agregar" data-bs-toggle="modal" data-bs-target="#agregarProductoModal">
-        <i class="bi bi-plus-lg icon-center"></i>
+    Agregar <i class="bi bi-plus-lg icon-center"></i>
     </button>
 </div>
 <div class="table-responsive">

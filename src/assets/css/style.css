@@ -53,6 +53,7 @@ html, body {
     margin: 0; /* Asegurar que no haya margen por defecto */
     padding: 0; /* Asegurar que no haya padding por defecto */
     overflow-x: hidden; /* Evitar scroll horizontal no deseado */
+    background-color: #f8f9fa;
 }
 
 /* Estilo para la barra lateral */
@@ -128,11 +129,11 @@ main {
 }
 
 .btn-agregar{
-    width: 25px; 
-    height: 25px; 
-    background-color: var(--primary-400); 
+    width: 100px; 
+    height: 30px;
+    background-color: var(--primary-500); 
     color:white;
-    border-radius: 100%;
+    border-radius: 10px;
     display: flex;        
     align-items: center;
     justify-content: center;

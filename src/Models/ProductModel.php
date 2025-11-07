@@ -65,7 +65,7 @@ class ProductModel extends DBConnect implements Crud
             throw new Exception('Error al guardar');
             
         } catch (\Exception $e) {
-            return self::error(500, 'Error al almacenar' , $e->getMessage());
+            return self::error(500, 'Error al almacenar: ' . $e->getMessage() , $e->getMessage()); 
         }
     }
 

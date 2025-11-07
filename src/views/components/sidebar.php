@@ -21,6 +21,13 @@ $isInventory = ($currentUrl == 'product' || $currentUrl == 'category' || $curren
                 Inicio
             </a>
         </li>
+        
+        <li>
+            <a href="?url=category" class="nav-link text-white <?php if($currentUrl == 'category') echo 'active'; ?>">
+                <i class="bi bi-tags me-2"></i>
+                Categoria
+            </a>
+        </li>
 
         <li>
             <a href="?url=product" class="nav-link text-white <?php if($currentUrl == 'product') echo 'active'; ?>">
@@ -28,11 +35,11 @@ $isInventory = ($currentUrl == 'product' || $currentUrl == 'category' || $curren
                 Productos
             </a>
         </li>
-        
+
         <li>
-            <a href="?url=category" class="nav-link text-white <?php if($currentUrl == 'category') echo 'active'; ?>">
-                <i class="bi bi-tags me-2"></i>
-                Categoria
+            <a href="?url=custom" class="nav-link text-white <?php if($currentUrl == 'custom') echo 'active'; ?>">
+                <i class="bi bi-palette2 me-2"></i>
+                Personalizado
             </a>
         </li>
 

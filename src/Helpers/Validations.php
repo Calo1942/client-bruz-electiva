@@ -16,7 +16,7 @@ trait Validations
 
     public static function validate_telefono($data)
     {
-        return (preg_match('/^[0-9]{11}$/', $data)) ? true : false;
+        return (preg_match('/^[0-9]{10}$/', $data)) ? true : false;
     }
 
     public static function validate_names($data)

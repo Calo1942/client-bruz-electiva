@@ -15,15 +15,16 @@ $model = new ProductModel();
 $action = null;
 
 // Determina la acción basándose en las solicitudes POST
-if (isset($_POST['store'])) {
+// Verificar tanto $_POST como $_REQUEST para asegurar compatibilidad con FormData
+if (isset($_POST['store']) || isset($_REQUEST['store'])) {
     $action = 'store';
-} elseif (isset($_POST['update'])) {
+} elseif (isset($_POST['update']) || isset($_REQUEST['update'])) {
     $action = 'update';
-} elseif (isset($_POST['delete'])) {
+} elseif (isset($_POST['delete']) || isset($_REQUEST['delete'])) {
     $action = 'delete';
-} elseif (isset($_POST['show'])) {
+} elseif (isset($_POST['show']) || isset($_REQUEST['show'])) {
     $action = 'show';
-} elseif (isset($_POST['getAll'])) {
+} elseif (isset($_POST['getAll']) || isset($_REQUEST['getAll'])) {
     $action = 'getAll';
 }
 
@@ -33,58 +34,57 @@ if ($action) {
         case 'store':
             $data = [];
             foreach ($module_config['fields'] as $field) {
-                $data[$field] = $_POST[$field] ?? '';
+                $data[$field] = $_POST[$field] ?? $_REQUEST[$field] ?? '';
             }
             $result = $model->store($data);
-            if ($result) {
-                header('Content-Type: application/json');
-                echo json_encode($result);
-            }
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($result);
             exit;
 
         case 'update':
-            $id = $_POST[$module_config['primary_key']] ?? null;
+            $id = $_POST[$module_config['primary_key']] ?? $_REQUEST[$module_config['primary_key']] ?? null;
             if ($id) {
                 $data = [];
                 foreach ($module_config['fields'] as $field) {
-                    $data[$field] = $_POST[$field] ?? '';
+                    $data[$field] = $_POST[$field] ?? $_REQUEST[$field] ?? '';
                 }
                 $result = $model->update($id, $data);
-                if ($result) {
-                    header('Content-Type: application/json');
-                    echo json_encode($result);
-                }
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode($result);
+            } else {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['success' => false, 'message' => 'ID de producto no proporcionado']);
             }
             exit;
 
         case 'delete':
-            $id = $_POST['delete'] ?? null;
+            $id = $_POST['delete'] ?? $_REQUEST['delete'] ?? null;
             if ($id) {
                 $result = $model->delete($id);
-                if ($result) {
-                    header('Content-Type: application/json');
-                    echo json_encode($result);
-                }
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode($result);
+            } else {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['success' => false, 'message' => 'ID no proporcionado']);
             }
             exit;
 
         case 'show':
-            $id = $_POST['show'] ?? null;
+            $id = $_POST['show'] ?? $_REQUEST['show'] ?? null;
             if ($id) {
                 $result = $model->find($id);
-                if ($result) {
-                    header('Content-Type: application/json');
-                    echo json_encode($result);
-                }
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode($result);
+            } else {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['success' => false, 'message' => 'ID no proporcionado']);
             }
             exit;
 
         case 'getAll':
             $result = $model->findAll();
-            if ($result) {
-                header('Content-Type: application/json');
-                echo json_encode($result);
-            }
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($result);
             exit;
     }
 }

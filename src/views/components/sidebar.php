@@ -37,12 +37,14 @@ $isInventory = ($currentUrl == 'product' || $currentUrl == 'category' || $curren
             </a>
         </li>
 
+        <!-- 
         <li>
             <a href="?url=custom" class="nav-link text-white <?php if($currentUrl == 'custom') echo 'active'; ?>">
                 <i class="bi bi-palette2 me-2"></i>
                 Personalizado
             </a>
         </li>
+        -->
 
         <li>
             <!-- Link a Clientes, activa si estamos en 'client' -->

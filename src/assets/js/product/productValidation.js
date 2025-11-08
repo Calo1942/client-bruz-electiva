@@ -2,13 +2,15 @@ import {
     validarTexto,
     validarDescripcion,
     validarPrecio,
-    validarCategoria
+    validarCategoria,
+    validarStock
 } from '../helpers/validation.js';
 
 // Objetos para rastrear errores de validación
 let erroresCrear = {
     nombre: false,
     descripcion: false,
+    stock: false,
     precio_detal: false,
     precio_mayor: false,
     id_categoria: false
@@ -17,6 +19,7 @@ let erroresCrear = {
 let erroresEditar = {
     nombre: false,
     descripcion: false,
+    stock: false,
     precio_detal: false,
     precio_mayor: false,
     id_categoria: false
@@ -65,6 +68,10 @@ function inicializarValidacionesCrear() {
         }
     });
 
+    $('#stockProducto').on('input', async function() {
+        const campo = $(this);
+        await validarCampoTiempoReal(campo, validarStock, erroresCrear, 'stock', formulario);
+    });
     // Validación de precio detal
     $('#detalProducto').on('input', async function() {
         const campo = $(this);

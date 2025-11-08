@@ -147,6 +147,11 @@ function inicializarValidacionesEditar() {
         }
     });
 
+    $('#editarStockProducto').on('input', async function() {
+        const campo = $(this);
+        await validarCampoTiempoReal(campo, validarStock, erroresCrear, 'stock', formulario);
+    });
+
     // Validación de precio detal
     $('#editarDetalProducto').on('input', async function() {
         const campo = $(this);

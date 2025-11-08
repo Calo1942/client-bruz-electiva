@@ -1,156 +1,48 @@
+// validation.js
 import { regExp } from "./regexp.js";
 
-function validarCampo(campo, condicion) {
-  if (condicion) {
-    campo.removeClass("is-invalid").addClass("is-valid");
-  } else {
-    campo.addClass("is-invalid");
-  }
-}
+const validarCampo = (campo, esValido) => {
+    campo.toggleClass("is-valid", esValido).toggleClass("is-invalid", !esValido);
+};
 
-export async function validarNombre(nombre) {
-  // Nombre
-  if (!regExp.nombreApellido.test(nombre.val().trim())) {
-    validarCampo(nombre, false);
-    return false;
-  } else {
-    validarCampo(nombre, true);
-    return true;
-  }
-}
+const crearValidador = (regex, campo) => {
+    const valor = campo.val().trim();
+    const esValido = regex.test(valor);
+    validarCampo(campo, esValido);
+    return esValido;
+};
 
-export async function validarApellido(apellido) {
-  // Apellido
-  if (!regExp.nombreApellido.test(apellido.val().trim())) {
-    validarCampo(apellido, false);
-    return false;
-  } else {
-    validarCampo(apellido, true);
-    return true;
-  }
-}
+export const validarNombre = (nombre) => crearValidador(regExp.nombreApellido, nombre);
+export const validarApellido = (apellido) => crearValidador(regExp.nombreApellido, apellido);
+export const validarTexto = (campoTexto) => crearValidador(regExp.texto, campoTexto);
+export const validarDescripcion = (descripcion) => crearValidador(regExp.descripcion, descripcion);
+export const validarTelefono = (telefono) => crearValidador(regExp.telefono, telefono);
+export const validarCedula = (cedula) => crearValidador(regExp.cedula, cedula);
+export const validarEmail = (email) => crearValidador(regExp.email, email);
 
-export async function validarTexto(campoTexto) {
+export const validarFecha = (fecha) => {
+    const esValido = fecha.val() && fecha.val() >= regExp.hoy;
+    validarCampo(fecha, esValido);
+    return esValido;
+};
 
-  // Texto 
-  if (!regExp.texto.test(campoTexto.val().trim())) {
-    validarCampo(campoTexto, false);
-    return false;
-  } else {
-    validarCampo(campoTexto, true);
-    return true;
-  }
-}
+export const validarPrecio = (precio) => {
+    const valor = precio.val().trim();
+    const esValido = regExp.precio.test(valor) && parseFloat(valor) > 0;
+    validarCampo(precio, esValido);
+    return esValido;
+};
 
-export async function validarDescripcion(campoDescripcion) {
-  // Descripción
-  if (!regExp.descripcion.test(campoDescripcion.val().trim())) {
-    validarCampo(campoDescripcion, false);
-    return false;
-  } else {
-    validarCampo(campoDescripcion, true);
-    return true;
-  }
-}
+export const validarStock = (stock) => {
+    const valor = stock.val().trim();
+    const esValido = regExp.stock.test(valor) && parseInt(valor) >= 0;
+    validarCampo(stock, esValido);
+    return esValido;
+};
 
-export async function validarTelefono(telefono) {
-  // telefono
-  if (
-    !regExp.telefono.test(telefono.val().trim()) ||
-    telefono.val().trim().length < 5
-  ) {
-    validarCampo(telefono, false);
-    return false;
-  } else {
-    validarCampo(telefono, true);
-    return true;
-  }
-}
-
-export async function validarFecha(fecha) {
-  // Fecha
-  if (!fecha.val() || fecha.val() < regExp.hoy) {
-    validarCampo(fecha, false);
-    return false;
-  } else {
-    validarCampo(fecha, true);
-    return true;
-  }
-}
-
-export async function validarHora(hora) {
-  // Hora
-  if (!hora) {
-    validarCampo(hora, false);
-    return false;
-  } else {
-    validarCampo(hora, true);
-    return true;
-  }
-}
-
-export async function validarCedula(cedula) {
-  // Cédula
-  if (!regExp.cedula.test(cedula.val().trim())) {
-    validarCampo(cedula, false);
-    return false;
-  } else {
-    validarCampo(cedula, true);
-    return true;
-  }
-}
-
-export async function validarEmail(email) {
-  // Email
-  if (!regExp.email.test(email.val().trim())) {
-    validarCampo(email, false);
-    return false;
-  } else {
-    validarCampo(email, true);
-    return true;
-  }
-}
-
-export async function validarPrecio(precio) {
-  // Precio: debe ser un número positivo, puede tener decimales
-  const valor = precio.val().trim();
-  if (!valor || valor === '' || parseFloat(valor) <= 0) {
-    validarCampo(precio, false);
-    return false;
-  }
-  if (!regExp.precio.test(valor)) {
-    validarCampo(precio, false);
-    return false;
-  } else {
-    validarCampo(precio, true);
-    return true;
-  }
-}
-
-export async function validarStock(stock) {
-  // Stock: debe ser un número entero positivo
-  const valor = stock.val().trim();
-  if (!valor || valor === '' || parseInt(valor) < 0) {
-    validarCampo(stock, false);
-    return false;
-  }
-  if (!regExp.stock.test(valor)) {
-    validarCampo(stock, false);
-    return false;
-  } else {
-    validarCampo(stock, true);
-    return true;
-  }
-}
-
-export async function validarCategoria(categoria) {
-  // Categoría: debe estar seleccionada (valor distinto de vacío)
-  const valor = categoria.val();
-  if (!valor || valor === '' || valor === '0') {
-    validarCampo(categoria, false);
-    return false;
-  } else {
-    validarCampo(categoria, true);
-    return true;
-  }
-}
+export const validarCategoria = (categoria) => {
+    const valor = categoria.val();
+    const esValido = valor && valor !== '' && valor !== '0';
+    validarCampo(categoria, esValido);
+    return esValido;
+};

@@ -94,6 +94,7 @@ class ProductModel extends DBConnect implements Crud
     public function find($id)
     {
         try {
+            /*
             $sql = "SELECT 
                 p.id_producto,
                 p.nombre,
@@ -106,8 +107,9 @@ class ProductModel extends DBConnect implements Crud
             FROM producto p 
             JOIN categoria c ON p.id_categoria = c.id_categoria
             WHERE p.id_producto = ?";
+            */
             
-            $stmt = $this->con->prepare($sql);
+            $stmt = $this->con->prepare("SELECT * FROM {$this->table} WHERE {$this->idField} = ?");
             $stmt->execute([$id]);
             $result = $stmt->fetch();
             return self::success(200, "{$this->module_name['singular']} obtenido", $result);

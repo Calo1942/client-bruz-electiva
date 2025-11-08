@@ -1,38 +1,26 @@
-/**
- * Product DataTable - Gestión de productos con DataTables y AJAX
- * Utiliza módulos modulares para operaciones CRUD y alertas
- */
+// productDataTable.js (adaptado)
+import { createDataTable, reloadDataTable, createActionsColumn } from '../helpers/dataTable.js';
+import { getById, create, update, remove, executeAjax } from '../helpers/ajax.js';
+import { showConfirm, showLoading, closeLoading, showSuccessMessage } from '../helpers/sweetalert.js';
+import { animateIn } from '../helpers/animations.js';
+import { showSkeleton, hideSkeleton } from '../helpers/skeleton.js';
+import { setupImagePreview, clearPreview } from '../helpers/imagePreview.js';
 
-import { createDataTable, reloadDataTable, clearFormValidation, clearFormFields, createActionsColumn } from '../helpers/dataTable.js';
-import { getAll, getById, create, update, remove, executeAjax } from '../helpers/ajax.js';
-import { showConfirm, showLoading, closeLoading } from '../helpers/sweetalert.js';
-import { initAllAnimations, animateIn, fixModalAriaHidden } from '../helpers/animations.js';
-import { showTableSkeleton, hideTableSkeleton, withSkeleton } from '../helpers/skeleton.js';
-import { setupImagePreview, showExistingImage, clearPreview } from '../helpers/imagePreview.js';
-
-// URL del endpoint (se puede configurar desde la vista si es necesario)
 const API_URL = window.productApiUrl || '';
 
 $(document).ready(async function() {
-    // Inicializar animaciones del sistema
-    initAllAnimations();
-    // Corregir problema de aria-hidden en modales
-    fixModalAriaHidden();
-    
     // Mostrar skeleton mientras carga la tabla
-    const $skeleton = showTableSkeleton('#productTable', 5, 8);
+    showSkeleton('#productTable', '#productTable_wrapper');
     
-    // Inicializar DataTable
     const tblProduct = createDataTable('#productTable', API_URL, [
         { data: 'id_producto' },
         { data: 'nombre' },
         {
             data: 'imagen',
             render: function(data) {
-                if (data) {
-                    return `<img src="${data}" alt="Imagen producto" style="max-width: 50px; max-height: 50px; border-radius: 4px; object-fit: cover;">`;
-                }
-                return '<span class="text-muted">Sin imagen</span>';
+                return data ? 
+                    `<img src="${data}" alt="Imagen producto" style="max-width: 50px; max-height: 50px; border-radius: 4px; object-fit: cover;">` :
+                    '<span class="text-muted">Sin imagen</span>';
             }
         },
         {
@@ -65,62 +53,36 @@ $(document).ready(async function() {
                 return data || 'Sin descripción';
             }
         },
-        createActionsColumn(null, {
+        createActionsColumn({
             idField: 'id_producto',
-            verTitle: 'Ver producto',
-            editarTitle: 'Editar producto',
-            eliminarTitle: 'Eliminar producto'
+            btnVer: true,
+            btnEditar: true,
+            btnEliminar: true
         })
     ], {
         initComplete: function() {
             $('.dataTables_filter input').attr('placeholder', 'Buscar...');
-            // Ocultar skeleton y mostrar tabla con animación
-            hideTableSkeleton('#productTable');
+            hideSkeleton('.skeleton-table', '#productTable_wrapper');
             animateIn('#productTable', 400, 100);
         }
     });
 
     // Configurar previsualización de imágenes
-    // Esperar a que el DOM esté completamente cargado
-    setTimeout(function() {
-        // Configurar preview para modal de crear
+    setTimeout(() => {
         if ($('#imagenProducto').length) {
-            setupImagePreview('#imagenProducto', '#previewImagenProducto', {
-                maxSize: 5 * 1024 * 1024,
-                allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
-                previewWidth: 200,
-                previewHeight: 200,
-                showRemoveButton: true,
-                animate: true
-            });
+            setupImagePreview('#imagenProducto', '#previewImagenProducto');
         }
         
-        // Configurar preview para modal de editar
         if ($('#editarImagenProducto').length) {
-            setupImagePreview('#editarImagenProducto', '#previewNuevaImagenProducto', {
-                maxSize: 5 * 1024 * 1024,
-                allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
-                previewWidth: 200,
-                previewHeight: 200,
-                showRemoveButton: true,
-                animate: true
-            });
+            setupImagePreview('#editarImagenProducto', '#previewNuevaImagenProducto');
         }
     }, 100);
 
     // Abrir modal de agregar
-    $(document).on('click', '.btn-agregar', async function() {
-        clearFormFields('#formAgregarProducto', [
-            'nombreProducto',
-            'categoriaProducto',
-            'descripcionProducto',
-            'stockProducto',
-            'detalProducto',
-            'mayorProducto',
-            'imagenProducto'
-        ]);
+    $(document).on('click', '.btn-agregar', function() {
+        $('#formAgregarProducto')[0].reset();
         clearPreview('#previewImagenProducto', '#imagenProducto');
-        clearFormValidation('#formAgregarProducto');
+        $('#formAgregarProducto').find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
         $('#agregarProductoModal').modal('show');
     });
 
@@ -133,7 +95,7 @@ $(document).ready(async function() {
         const success = await executeAjax(
             getById(API_URL, id),
             null,
-            function(response) {
+            (response) => {
                 closeLoading();
                 $('#verNombreProducto').text(response.data.nombre || '');
                 $('#verCategoriaProducto').text(response.data.id_categoria || 'Sin categoría');
@@ -142,14 +104,17 @@ $(document).ready(async function() {
                 $('#verPrecioDetalProducto').text('$' + parseFloat(response.data.precio_detal || 0).toFixed(2));
                 $('#verPrecioMayorProducto').text(response.data.precio_mayor ? '$' + parseFloat(response.data.precio_mayor).toFixed(2) : 'N/A');
                 
-                showExistingImage('#verImagenProducto', response.data.imagen, true);
+                const $img = $('#verImagenProducto');
+                if (response.data.imagen) {
+                    $img.attr('src', response.data.imagen).show();
+                } else {
+                    $img.hide();
+                }
                 $('#verProductoModal').modal('show');
             }
         );
         
-        if (!success) {
-            closeLoading();
-        }
+        if (!success) closeLoading();
     });
 
     // Crear producto
@@ -163,16 +128,14 @@ $(document).ready(async function() {
         const success = await executeAjax(
             create(API_URL, formData, { processData: false, contentType: false }),
             'Producto agregado correctamente',
-            function() {
+            () => {
                 closeLoading();
                 $('#agregarProductoModal').modal('hide');
                 reloadDataTable(tblProduct);
             }
         );
         
-        if (!success) {
-            closeLoading();
-        }
+        if (!success) closeLoading();
     });
 
     // Editar producto - Abrir modal
@@ -184,7 +147,7 @@ $(document).ready(async function() {
         const success = await executeAjax(
             getById(API_URL, id),
             null,
-            function(response) {
+            (response) => {
                 closeLoading();
                 $('#editarProductoId').val(response.data.id_producto);
                 $('#editarNombreProducto').val(response.data.nombre);
@@ -194,18 +157,21 @@ $(document).ready(async function() {
                 $('#editarMayorProducto').val(response.data.precio_mayor || '');
                 $('#editarCategoriaProducto').val(response.data.id_categoria);
                 
-                showExistingImage('#previewImagenActual', response.data.imagen, true);
+                const $img = $('#previewImagenActual');
+                if (response.data.imagen) {
+                    $img.attr('src', response.data.imagen).show();
+                } else {
+                    $img.hide();
+                }
                 
                 $('#editarImagenProducto').val('');
                 clearPreview('#previewNuevaImagenProducto', '#editarImagenProducto');
-                clearFormValidation('#formEditarProducto');
+                $('#formEditarProducto').find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
                 $('#editarProductoModal').modal('show');
             }
         );
         
-        if (!success) {
-            closeLoading();
-        }
+        if (!success) closeLoading();
     });
 
     // Actualizar producto
@@ -219,16 +185,14 @@ $(document).ready(async function() {
         const success = await executeAjax(
             update(API_URL, formData, { processData: false, contentType: false }),
             'Producto actualizado correctamente',
-            function() {
+            () => {
                 closeLoading();
                 $('#editarProductoModal').modal('hide');
                 reloadDataTable(tblProduct);
             }
         );
         
-        if (!success) {
-            closeLoading();
-        }
+        if (!success) closeLoading();
     });
 
     // Eliminar producto
@@ -237,24 +201,19 @@ $(document).ready(async function() {
         
         const confirmed = await showConfirm(
             '¿Estás seguro?',
-            '¿Está seguro de eliminar este producto?',
-            'Sí, eliminar',
-            'Cancelar'
+            '¿Está seguro de eliminar este producto?'
         );
         
         if (confirmed) {
-            const success = await executeAjax(
+            await executeAjax(
                 remove(API_URL, id),
                 'Producto eliminado correctamente',
-                function() {
-                    reloadDataTable(tblProduct);
-                }
+                () => reloadDataTable(tblProduct)
             );
         }
     });
 
-    // Recargar tabla al cerrar modal
-    $('#agregarProductoModal').on('hidden.bs.modal', function() {
-        reloadDataTable(tblProduct, 500);
+    $('#agregarProductoModal').on('hidden.bs.modal', () => {
+        reloadDataTable(tblProduct);
     });
 });

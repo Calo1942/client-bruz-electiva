@@ -41,35 +41,10 @@ export const update = (url, data, options = {}) => {
     return ajaxRequest(url, 'POST', { ...data, update: true }, options);
 };
 
-// Función para parsear respuestas mixtas (JSON/HTML)
+// Función para parsear respuestas
 const parseMixedResponse = (response) => {
     if (typeof response !== 'string') {
         return response;
-    }
-
-    // Si es HTML, buscar datos JSON dentro del HTML
-    if (response.includes('<!DOCTYPE html>') || response.includes('<html')) {
-        try {
-            // Buscar script tags que contengan JSON
-            const scriptMatch = response.match(/<script[^>]*>[\s\S]*?({[\s\S]*?})[\s\S]*?<\/script>/i);
-            if (scriptMatch && scriptMatch[1]) {
-                return JSON.parse(scriptMatch[1]);
-            }
-
-            // Buscar JSON directamente en el body
-            const jsonMatch = response.match(/{[\s\S]*?}/);
-            if (jsonMatch) {
-                return JSON.parse(jsonMatch[0]);
-            }
-        } catch (e) {
-            console.warn('No se pudo extraer JSON del HTML:', e);
-        }
-
-        // Si no se puede extraer JSON, devolver error genérico
-        return {
-            success: false,
-            message: 'Error del servidor: Respuesta en formato HTML inesperada'
-        };
     }
 
     // Intentar parsear como JSON directo

@@ -51,14 +51,6 @@ $(document).ready(async function () {
     }
   );
 
-  $(document).on("click", ".btn-agregar", function () {
-    $("#formAgregarCliente")[0].reset();
-    $("#formAgregarCliente")
-      .find(".is-valid, .is-invalid")
-      .removeClass("is-valid is-invalid");
-    $("#agregarClienteModal").modal("show");
-  });
-
   $(document).on("click", ".btn-ver", async function () {
     const cedula = this.value;
 
@@ -72,21 +64,49 @@ $(document).ready(async function () {
     });
   });
 
-  $(document).on("click", ".btn-eliminar", async function () {
+  $(document).on("click", ".btn-editar", async function () {
     const cedula = this.value;
 
-    const confirmed = await showConfirm(
-      "¿Estás seguro?",
-      "¿Está seguro de eliminar este cliente?"
+    await executeAjax(getById(API_URL, cedula), null, (response) => {
+      $("#editarCedula").val(response.data.cedula);
+      $("#editarNombre").val(response.data.nombre);
+      $("#editarApellido").val(response.data.apellido);
+      $("#editarCorreo").val(response.data.correo);
+      $("#editarTelefono").val(response.data.telefono);
+      $("#formEditarCliente")
+        .find(".is-valid, .is-invalid")
+        .removeClass("is-valid is-invalid");
+      $("#editarClienteModal").modal("show");
+    });
+  });
+
+  $(document).on("submit", "#formEditarCliente", async function (e) {
+    e.preventDefault();
+
+    showLoading(
+      "Actualizando...",
+      "Por favor espere mientras se actualiza el cliente"
     );
 
-    if (confirmed) {
-      await executeAjax(
-        remove(API_URL, cedula),
-        "Cliente eliminado correctamente",
-        () => reloadDataTable(tblClient)
-      );
-    }
+    const formData = {
+      cedula: $("#editarCedula").val(),
+      nombre: $("#editarNombre").val(),
+      apellido: $("#editarApellido").val(),
+      correo: $("#editarCorreo").val(),
+      telefono: $("#editarTelefono").val(),
+    };
+
+    const success = await executeAjax(
+      update(API_URL, formData),
+      "Cliente actualizado correctamente",
+      () => {
+        closeLoading();
+        $("#editarClienteModal").modal("hide");
+        reloadDataTable(tblClient);
+      }
+    );
+
+    if (!success) closeLoading();
   });
 
   $("#agregarClienteModal").on("hidden.bs.modal", () => {

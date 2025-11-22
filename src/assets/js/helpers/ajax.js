@@ -42,15 +42,10 @@ export const update = (url, data, options = {}) => {
 };
 
 // Función para parsear respuestas
-const parseMixedResponse = (response) => {
+const parseResponse = (response) => {
     if (typeof response !== 'string') {
         return response;
-    }
-
-    // Intentar parsear como JSON directo
-    try {
-        return JSON.parse(response);
-    } catch (e) {
+    } else {
         return {
             success: false,
             message: 'Error: Respuesta del servidor no es JSON válido'
@@ -74,7 +69,7 @@ const handleAjaxError = async (error) => {
     }
 
     if (error.responseText) {
-        const parsedResponse = parseMixedResponse(error.responseText);
+        const parsedResponse = parseResponse(error.responseText);
         if (parsedResponse.message) {
             await showErrorMessage(parsedResponse.message);
             return;
@@ -90,7 +85,7 @@ export const executeAjax = async (ajaxPromise, successMessage = null, onSuccess 
         let response = await ajaxPromise;
 
         // Parsear respuesta mixta
-        response = parseMixedResponse(response);
+        response = parseResponse(response);
 
         if (response.success) {
             if (successMessage) await showSuccessMessage(successMessage);

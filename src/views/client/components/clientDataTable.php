@@ -2,8 +2,24 @@
     <!-- Título y botón para abrir modal de agregar cliente -->
     <h2 class="me-2 mb-0 titulo">Clientes</h2>
     <button class="btn btn-agregar" data-bs-toggle="modal" data-bs-target="#agregarClienteModal">
-    Agregar <i class="bi bi-plus-lg icon-center"></i>
+        Agregar <i class="bi bi-plus-lg icon-center"></i>
     </button>
+</div>
+<div class="skeleton-table mb-3">
+    <div class="skeleton-header">
+        <div class="skeleton-header-cell"></div>
+        <div class="skeleton-header-cell"></div>
+        <div class="skeleton-header-cell"></div>
+    </div>
+    <div class="skeleton-body">
+        <?php for ($i = 0; $i < 5; $i++): ?>
+            <div class="skeleton-row">
+                <div class="skeleton-cell"></div>
+                <div class="skeleton-cell"></div>
+                <div class="skeleton-cell"></div>
+            </div>
+        <?php endfor; ?>
+    </div>
 </div>
 <div class="table-responsive">
     <!-- Tabla compatible con DataTable -->

@@ -7,9 +7,10 @@ import { showSkeleton, hideSkeleton } from '../helpers/skeleton.js';
 
 const API_URL = window.categoryApiUrl || '';
 
-$(document).ready(async function() {
-    showSkeleton('#categoryTable', '#categoryTable_wrapper');
-    
+$(document).ready(async function () {
+    showSkeleton('.skeleton-table', '#categoryTable');
+
+
     const tblCategory = createDataTable('#categoryTable', API_URL, [
         { data: 'id_categoria' },
         { data: 'nombre' },
@@ -20,22 +21,26 @@ $(document).ready(async function() {
             btnEliminar: true
         })
     ], {
-        initComplete: function() {
+        initComplete: function () {
             $('.dataTables_filter input').attr('placeholder', 'Buscar...');
-            hideSkeleton('.skeleton-table', '#categoryTable_wrapper');
-            animateIn('#categoryTable', 400, 100);
+            // Agregado setTimeout para retrasar la visualización de la tabla
+            setTimeout(() => {
+                hideSkeleton('.skeleton-table', '#categoryTable');
+                animateIn('#categoryTable', 400, 100);
+            }, 800);
         }
     });
 
-    $(document).on('click', '.btn-agregar', function() {
+
+    $(document).on('click', '.btn-agregar', function () {
         $('#formAgregarCategoria')[0].reset();
         $('#formAgregarCategoria').find('.is-valid, .is-invalid').removeClass('is-valid is-invalid');
         $('#agregarCategoriaModal').modal('show');
     });
 
-    $(document).on('click', '.btn-ver', async function() {
+    $(document).on('click', '.btn-ver', async function () {
         const id = this.value;
-        
+
         await executeAjax(
             getById(API_URL, id),
             null,
@@ -47,15 +52,15 @@ $(document).ready(async function() {
         );
     });
 
-    $(document).on('submit', '#formAgregarCategoria', async function(e) {
+    $(document).on('submit', '#formAgregarCategoria', async function (e) {
         e.preventDefault();
-        
+
         showLoading('Guardando...', 'Por favor espere mientras se guarda la categoría');
-        
+
         const formData = {
             nombre: $('#nombreCategoria').val()
         };
-        
+
         const success = await executeAjax(
             create(API_URL, formData),
             'Categoría agregada correctamente',
@@ -65,13 +70,13 @@ $(document).ready(async function() {
                 reloadDataTable(tblCategory);
             }
         );
-        
+
         if (!success) closeLoading();
     });
 
-    $(document).on('click', '.btn-editar', async function() {
+    $(document).on('click', '.btn-editar', async function () {
         const id = this.value;
-        
+
         await executeAjax(
             getById(API_URL, id),
             null,
@@ -84,16 +89,16 @@ $(document).ready(async function() {
         );
     });
 
-    $(document).on('submit', '#formEditarCategoria', async function(e) {
+    $(document).on('submit', '#formEditarCategoria', async function (e) {
         e.preventDefault();
-        
+
         showLoading('Actualizando...', 'Por favor espere mientras se actualiza la categoría');
-        
+
         const formData = {
             id_categoria: $('#editarCategoriaId').val(),
             nombre: $('#editarNombreCategoria').val()
         };
-        
+
         const success = await executeAjax(
             update(API_URL, formData),
             'Categoría actualizada correctamente',
@@ -103,18 +108,18 @@ $(document).ready(async function() {
                 reloadDataTable(tblCategory);
             }
         );
-        
+
         if (!success) closeLoading();
     });
 
-    $(document).on('click', '.btn-eliminar', async function() {
+    $(document).on('click', '.btn-eliminar', async function () {
         const id = this.value;
-        
+
         const confirmed = await showConfirm(
             '¿Estás seguro?',
             '¿Está seguro de eliminar esta categoría?'
         );
-        
+
         if (confirmed) {
             await executeAjax(
                 remove(API_URL, id),

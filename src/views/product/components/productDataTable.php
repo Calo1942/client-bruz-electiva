@@ -5,6 +5,22 @@
         Agregar <i class="bi bi-plus-lg icon-center"></i>
     </button>
 </div>
+<div class="skeleton-table mb-3">
+    <div class="skeleton-header">
+        <div class="skeleton-header-cell"></div>
+        <div class="skeleton-header-cell"></div>
+        <div class="skeleton-header-cell"></div>
+    </div>
+    <div class="skeleton-body">
+        <?php for ($i = 0; $i < 5; $i++): ?>
+            <div class="skeleton-row">
+                <div class="skeleton-cell"></div>
+                <div class="skeleton-cell"></div>
+                <div class="skeleton-cell"></div>
+            </div>
+        <?php endfor; ?>
+    </div>
+</div>
 <div class="table-responsive">
     <!-- Tabla compatible con DataTable -->
     <table id="productTable" class="table table-striped table-hover">

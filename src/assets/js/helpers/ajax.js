@@ -1,9 +1,9 @@
-// ajax.js (versión corregida)
+// ajax.js
 import { showSuccessMessage, showErrorMessage, showConnectionError } from './sweetalert.js';
 
 const ajaxRequest = (url, method = 'POST', data = {}, options = {}) => {
     const isFormData = data instanceof FormData;
-    
+
     return $.ajax({
         url,
         method,
@@ -46,7 +46,7 @@ const parseMixedResponse = (response) => {
     if (typeof response !== 'string') {
         return response;
     }
-    
+
     // Si es HTML, buscar datos JSON dentro del HTML
     if (response.includes('<!DOCTYPE html>') || response.includes('<html')) {
         try {
@@ -55,7 +55,7 @@ const parseMixedResponse = (response) => {
             if (scriptMatch && scriptMatch[1]) {
                 return JSON.parse(scriptMatch[1]);
             }
-            
+
             // Buscar JSON directamente en el body
             const jsonMatch = response.match(/{[\s\S]*?}/);
             if (jsonMatch) {
@@ -64,21 +64,21 @@ const parseMixedResponse = (response) => {
         } catch (e) {
             console.warn('No se pudo extraer JSON del HTML:', e);
         }
-        
+
         // Si no se puede extraer JSON, devolver error genérico
-        return { 
-            success: false, 
-            message: 'Error del servidor: Respuesta en formato HTML inesperada' 
+        return {
+            success: false,
+            message: 'Error del servidor: Respuesta en formato HTML inesperada'
         };
     }
-    
+
     // Intentar parsear como JSON directo
     try {
         return JSON.parse(response);
     } catch (e) {
-        return { 
-            success: false, 
-            message: 'Error: Respuesta del servidor no es JSON válido' 
+        return {
+            success: false,
+            message: 'Error: Respuesta del servidor no es JSON válido'
         };
     }
 };
@@ -86,18 +86,18 @@ const parseMixedResponse = (response) => {
 // Manejo mejorado de errores
 const handleAjaxError = async (error) => {
     console.error('AJAX Error:', error);
-    
+
     if (error.status === 0) {
         await showConnectionError();
         return;
     }
-    
+
     if (error.responseJSON) {
         const errorMsg = error.responseJSON.message || error.responseJSON.error || 'Error del servidor';
         await showErrorMessage(errorMsg);
         return;
     }
-    
+
     if (error.responseText) {
         const parsedResponse = parseMixedResponse(error.responseText);
         if (parsedResponse.message) {
@@ -105,7 +105,7 @@ const handleAjaxError = async (error) => {
             return;
         }
     }
-    
+
     // Error genérico
     await showErrorMessage('Error de comunicación con el servidor');
 };
@@ -113,16 +113,16 @@ const handleAjaxError = async (error) => {
 export const executeAjax = async (ajaxPromise, successMessage = null, onSuccess = null) => {
     try {
         let response = await ajaxPromise;
-        
+
         // Parsear respuesta mixta
         response = parseMixedResponse(response);
-        
+
         if (response.success) {
             if (successMessage) await showSuccessMessage(successMessage);
             if (onSuccess) onSuccess(response);
             return true;
         }
-        
+
         await showErrorMessage(response.message || 'Ha ocurrido un error');
         return false;
     } catch (error) {

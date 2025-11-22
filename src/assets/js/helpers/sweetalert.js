@@ -1,4 +1,4 @@
-// sweetalert.js (corregido)
+// sweetalert.js
 const colors = {
     success: '#229645',
     danger: '#b92727',
@@ -21,7 +21,7 @@ function createAlert(icon, title, text, confirmButtonText, color, options = {}) 
         alert(`${title}: ${text}`);
         return Promise.resolve();
     }
-    
+
     return Swal.fire({
         ...commonConfig,
         title,
@@ -62,18 +62,18 @@ export const showConfirm = (title = '¿Estás seguro?', text = 'Esta acción no 
     }).then(result => result.isConfirmed);
 
 // Agregar las funciones que faltaban
-export const showErrorMessage = (message, title = '¡Error!') => 
+export const showErrorMessage = (message, title = '¡Error!') =>
     showError(title, message);
 
-export const showSuccessMessage = (message, title = '¡Éxito!') => 
+export const showSuccessMessage = (message, title = '¡Éxito!') =>
     showSuccess(title, message);
 
-export const showConnectionError = () => 
+export const showConnectionError = () =>
     showError('Error de conexión', 'No se pudo conectar con el servidor. Verifique su conexión e intente nuevamente.', 'Reintentar');
 
 export const showLoading = (title = 'Cargando...', text = 'Por favor espere') => {
     if (typeof Swal === 'undefined') return;
-    
+
     Swal.fire({
         ...commonConfig,
         title,
